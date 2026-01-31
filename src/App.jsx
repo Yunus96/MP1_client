@@ -1,14 +1,11 @@
-import { useState } from 'react'
-import Nav from './components/Nav'
-import Hero from './components/Hero'
+import HomePage from './pages/Home'
 import './App.css'
 
 function App() {
 
   return (
     <>
-      <Nav />
-      <Hero />
+      <HomePage />
     </>
   )
 }
