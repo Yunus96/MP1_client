@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Nav from './components/Nav'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import Hero from './components/Hero'
 import './App.css'
 
 function App() {
@@ -9,6 +8,7 @@ function App() {
   return (
     <>
       <Nav />
+      <Hero />
     </>
   )
 }

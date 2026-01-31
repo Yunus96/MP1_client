@@ -95,3 +95,37 @@
   align-items: center;
   justify-content: center;
 }
+
+/* Hero part */
+.category-card {
+  position: relative;
+}
+
+.category-label {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 2px 12px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.banner {
+  height: 280px;
+  background-color: #cfcfcf;
+  border-radius: 4px;
+}
+
+.arrival-card {
+  background-color: #d3d3d3;
+  padding: 20px;
+  border-radius: 4px;
+}
+
+.arrival-image {
+  width: 120px;
+  height: 120px;
+  background-color: white;
+}
