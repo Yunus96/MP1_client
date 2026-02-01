@@ -1,11 +1,16 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Nav from "./components/Nav";
-import HomePage from "./pages/Home";
-import ProductListPage from "./pages/ProductListPage";
-import ProductDetailPage from "./pages/ProductDetailPage"
-import WishlistPage from "./pages/WishlistPage";
 import './App.css'
-import CartPage from "./pages/CartPage";
+
+import Nav from "./components/Nav";
+import {
+  HomePage,
+  CartPage,
+  ProductDetailPage,
+  ProductListPage,
+  WishlistPage
+} from "./pages";
+
+
 
 function App() {
 
