@@ -1,20 +1,30 @@
-import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
 
 const categories = ["Men", "Women", "Kids", "Electronics", "Home"];
 
+const categoryImages = {
+  Men: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=400",
+  Women: "https://images.unsplash.com/photo-1520975916090-3105956dac38?w=400",
+  Kids: "https://images.unsplash.com/photo-1603252109303-2751441dd157?w=400",
+  Electronics:
+    "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400",
+  Home: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=400",
+};
+
 function Hero() {
+  const navigate = useNavigate();
+
   return (
     <div className="container my-4">
       {/* Top Categories */}
       <div className="row text-center mb-4">
-        {categories.map((cat, index) => (
-          <div className="col" key={index}>
-            <div className="category-card">
-              <img
-                src="https://via.placeholder.com/200x140"
-                alt={cat}
-                className="img-fluid"
-              />
+        {categories.map((cat) => (
+          <div className="col" key={cat}>
+            <div
+              className="category-card"
+              onClick={() => navigate(`/category/${cat.toLowerCase()}`)}
+            >
+              <img src={categoryImages[cat]} alt={cat} className="img-fluid" />
               <div className="category-label">{cat}</div>
             </div>
           </div>
@@ -22,14 +32,26 @@ function Hero() {
       </div>
 
       {/* Banner Section */}
-      <div className="banner mb-5"></div>
+      <div
+        className="banner mb-5"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200')",
+        }}
+      ></div>
 
       {/* New Arrivals */}
       <div className="row g-4">
         {[1, 2].map((item) => (
           <div className="col-md-6" key={item}>
             <div className="arrival-card d-flex align-items-center">
-              <div className="arrival-image"></div>
+              <div className="arrival-image">
+                <img
+                  src="https://images.unsplash.com/photo-1520975916090-3105956dac38?w=300"
+                  alt="arrival"
+                />
+              </div>
+
               <div className="arrival-content ms-4">
                 <small className="text-uppercase text-muted">
                   New Arrivals

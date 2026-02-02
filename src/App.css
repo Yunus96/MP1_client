@@ -1,41 +1,46 @@
-/* Home */
-.category-card {
-  position: relative;
-}
-
-.category-label {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  padding: 2px 12px;
-  font-size: 14px;
-  font-weight: 500;
+.category-card img {
+  height: 140px;
+  width: 100%;
+  object-fit: cover;
 }
 
 .banner {
   height: 280px;
-  background-color: #cfcfcf;
-  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
 }
 
-.arrival-card {
-  background-color: #d3d3d3;
-  padding: 20px;
-  border-radius: 4px;
-}
-
-.arrival-image {
+.arrival-image img {
   width: 120px;
   height: 120px;
-  background-color: white;
+  object-fit: cover;
+}
+.category-card {
+  position: relative; /* REQUIRED */
+}
+
+.category-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background: rgba(255, 255, 255, 0.9);
+  padding: 6px 16px;
+  border-radius: 4px;
+
+  font-size: 16px;
+  font-weight: 600;
+  color: #000;
+
+  pointer-events: none; /* optional: clicks go to image */
 }
 /* Nav link */
 .logo-link,
 .icon-wrapper {
   text-decoration: none;
   color: inherit;
+  position: relative;
 }
 
 /* Full width background */
@@ -120,8 +125,10 @@
 
 .badge {
   position: absolute;
-  top: -6px;
-  right: -8px;
+  top: 0;
+  right: 0;
+
+  transform: translate(50%, -50%);
 
   background: red;
   color: white;
@@ -135,6 +142,7 @@
   align-items: center;
   justify-content: center;
 }
+
 /* Product list */
 .product-image-box {
   background: #eee;
