@@ -31,6 +31,12 @@
   height: 120px;
   background-color: white;
 }
+/* Nav link */
+.logo-link,
+.icon-wrapper {
+  text-decoration: none;
+  color: inherit;
+}
 
 /* Full width background */
 .nav-wrapper {
@@ -387,4 +393,3 @@
   color: green;
   font-size: 14px;
 }
-

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 export default function Nav() {
   return (
@@ -5,7 +6,9 @@ export default function Nav() {
       <nav className="nav">
         {/* Left */}
         <div className="nav-left">
-          <h2>MyShoppingSite</h2>
+          <Link to="/" className="logo-link">
+            <h2>MyShoppingSite</h2>
+          </Link>
         </div>
 
         {/* Center */}
@@ -18,16 +21,18 @@ export default function Nav() {
 
         {/* Right */}
         <div className="nav-right">
-          <button className="login-btn">Login</button>
+          <Link to="/login">
+            <button className="login-btn">Login</button>
+          </Link>
 
-          <div className="icon-wrapper">
+          <Link to="/wishlist" className="icon-wrapper">
             ❤️ <span className="badge">0</span>
-          </div>
+          </Link>
 
-          <div className="icon-wrapper cart">
+          <Link to="/cart" className="icon-wrapper cart">
             🛒 <span className="badge">0</span>
             <span className="cart-text">Cart</span>
-          </div>
+          </Link>
         </div>
       </nav>
     </header>
