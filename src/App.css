@@ -1,3 +1,4 @@
+/* Hero comp */
 .category-card img {
   height: 140px;
   width: 100%;
@@ -35,6 +36,7 @@
 
   pointer-events: none; /* optional: clicks go to image */
 }
+
 /* Nav link */
 .logo-link,
 .icon-wrapper {
@@ -254,6 +256,18 @@
 .product-card {
   background: #fff;
   padding: 10px;
+}
+
+.product-name {
+  min-height: 40px; /* ensures equal height */
+  line-height: 1.2;
+  overflow: hidden;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* show max 2 lines */
+  -webkit-box-orient: vertical;
+
+  text-overflow: ellipsis;
 }
 
 .image-wrapper {
