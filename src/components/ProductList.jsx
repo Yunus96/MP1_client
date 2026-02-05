@@ -8,7 +8,8 @@ function ProductListing() {
   const [maxPrice, setMaxPrice] = useState(0);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-
+  const [selectedRating, setSelectedRating] = useState(null);
+  const [sortOrder, setSortOrder] = useState(null);
 
   //  API call on component mount
   useEffect(() => {
@@ -62,31 +63,54 @@ function ProductListing() {
   }
 
   const handleCategoryChange = (categoryId) => {
-    setSelectedCategories((prev) =>
-      prev.includes(categoryId)
-        ? prev.filter((id) => id !== categoryId) // uncheck
-        : [...prev, categoryId] // check
+    setSelectedCategories(
+      (prev) =>
+        prev.includes(categoryId)
+          ? prev.filter((id) => id !== categoryId) // uncheck
+          : [...prev, categoryId] // check
     );
   };
-  
 
-  const filteredProducts = products.filter((item) => {
-    const matchesPrice = item.price <= priceRange;
-  
-    const matchesCategory =
-      selectedCategories.length === 0 ||
-      selectedCategories.includes(item.category);
-  
-    return matchesPrice && matchesCategory;
-  });
-  return ( 
+  const filteredProducts = products
+    .filter((item) => {
+      const matchesPrice = item.price <= priceRange;
+
+      const matchesCategory =
+        selectedCategories.length === 0 ||
+        selectedCategories.includes(item.category);
+
+      const matchesRating =
+        selectedRating === null || item.rating >= selectedRating;
+
+      return matchesPrice && matchesCategory && matchesRating;
+    })
+    .sort((a, b) => {
+      if (sortOrder === "lowToHigh") {
+        return a.price - b.price;
+      }
+      if (sortOrder === "highToLow") {
+        return b.price - a.price;
+      }
+      return 0; // no sorting
+    });
+
+  return (
     <div className="container-fluid mt-4">
       <div className="row">
         {/* FILTERS */}
         <div className="col-md-3 filter-section px-4">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h5>Filters</h5>
-            <span className="clear-text">Clear</span>
+            <span
+              className="clear-text"
+              onClick={() => {
+                setPriceRange(maxPrice);
+                setSelectedCategories([]);
+                setSelectedRating(null);
+              }}
+            >
+              Clear
+            </span>
           </div>
           {/* Price */}
           <h6>Price</h6>
@@ -114,23 +138,21 @@ function ProductListing() {
                 checked={selectedCategories.includes(category._id)}
                 onChange={() => handleCategoryChange(category._id)}
               />
-              <label
-                className="form-check-label"
-                htmlFor={category._id}
-              >
+              <label className="form-check-label" htmlFor={category._id}>
                 {category.name}
               </label>
             </div>
           ))}
           {/* Rating */}
           <h6>Rating</h6>
-          {["4", "3", "2", "1"].map((r, i) => (
-            <div className="form-check" key={i}>
+          {[5, 4, 3, 2, 1].map((r) => (
+            <div className="form-check" key={r}>
               <input
                 className="form-check-input"
                 type="radio"
                 name="rating"
-                defaultChecked={r === "4"}
+                checked={selectedRating === r}
+                onChange={() => setSelectedRating(r)}
               />
               <label className="form-check-label">{r} Stars & above</label>
             </div>
@@ -142,12 +164,19 @@ function ProductListing() {
               className="form-check-input"
               type="radio"
               name="sort"
-              defaultChecked
+              checked={sortOrder === "lowToHigh"}
+              onChange={() => setSortOrder("lowToHigh")}
             />
             <label className="form-check-label">Price - Low to High</label>
           </div>
           <div className="form-check">
-            <input className="form-check-input" type="radio" name="sort" />
+            <input
+              className="form-check-input"
+              type="radio"
+              name="sort"
+              checked={sortOrder === "highToLow"}
+              onChange={() => setSortOrder("highToLow")}
+            />
             <label className="form-check-label">Price - High to Low</label>
           </div>
         </div>
@@ -157,7 +186,7 @@ function ProductListing() {
           <h5 className="mb-4">
             Showing All Products{" "}
             <span className="text-muted">
-              ( Showing {products.length} products )
+              ( Showing {filteredProducts.length} products )
             </span>
           </h5>
 
