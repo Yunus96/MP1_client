@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useCart } from "../context/CartContext";
 
 function ProductListing() {
   const [products, setProducts] = useState([]);
@@ -10,6 +11,8 @@ function ProductListing() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedRating, setSelectedRating] = useState(null);
   const [sortOrder, setSortOrder] = useState(null);
+
+  const { addToCart, cartItems } = useCart();
 
   //  API call on component mount
   useEffect(() => {
@@ -94,6 +97,32 @@ function ProductListing() {
       return 0; // no sorting
     });
 
+  const handleAddToCart = async (productId) => {
+    try {
+      const res = await fetch("https://zcr45k-5000.csb.app/api/cart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user: "user123", // later replace with logged-in user
+          productId,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to add product to cart");
+      }
+
+      const data = await res.json();
+      console.log("Added to cart:", data);
+
+      alert("Product added to cart ");
+    } catch (error) {
+      console.error(error);
+      alert("Error adding product to cart");
+    }
+  };
   return (
     <div className="container-fluid mt-4">
       <div className="row">
@@ -191,38 +220,47 @@ function ProductListing() {
           </h5>
 
           <div className="row g-4">
-            {filteredProducts.map((item, index) => (
-              <div className="col-md-3" key={index}>
-                <div className="product-card">
-                  <div className="image-wrapper">
-                    <span className={`wishlist ${index === 0 ? "active" : ""}`}>
-                      ♥
-                    </span>
-                    <img
-                      src={
-                        item.images?.[0] ||
-                        "https://www.pexels.com/photo/a-bouquet-of-roses-and-lily-flower-buds-11393582/"
-                      }
-                      alt={item.name}
-                    />
-                  </div>
+            {filteredProducts.map((item, index) => {
+              const isInCart = cartItems.some((c) => c.productId === item._id);
+              return (
+                <div className="col-md-3" key={index}>
+                  <div className="product-card">
+                    <div className="image-wrapper">
+                      <span
+                        className={`wishlist ${index === 0 ? "active" : ""}`}
+                      >
+                        ♥
+                      </span>
+                      <img
+                        src={
+                          item.images?.[0] ||
+                          "https://www.pexels.com/photo/a-bouquet-of-roses-and-lily-flower-buds-11393582/"
+                        }
+                        alt={item.name}
+                      />
+                    </div>
+                    <div className="text-center mt-3">
+                      <p className="product-name mb-1">{item.name}</p>
+                      <small className="text-muted">⭐ {item.rating}</small>
+                      <h6 className="fw-bold">₹{item.price}</h6>
+                    </div>
 
-                  <div className="text-center mt-3">
-                    <p className="product-name mb-1">{item.name}</p>
-                    <small className="text-muted">⭐ {item.rating}</small>
-                    <h6 className="fw-bold">₹{item.price}</h6>
+                    <button
+                      className={`btn w-100 ${
+                        isInCart ? "btn-primary" : "btn-secondary"
+                      }`}
+                      onClick={() => {
+                        if (!isInCart) {
+                          addToCart(item._id);
+                        }
+                      }}
+                    >
+                      {isInCart ? "Go to Cart" : "Add to Cart"}
+                    </button>
                   </div>
-
-                  <button
-                    className={`btn w-100 ${
-                      index === 0 ? "btn-primary" : "btn-secondary"
-                    }`}
-                  >
-                    {index === 0 ? "Go to Cart" : "Add to Cart"}
-                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
