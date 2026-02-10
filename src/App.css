@@ -415,3 +415,18 @@
   color: green;
   font-size: 14px;
 }
+
+/* wishlist */
+
+.wishlist {
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.wishlist.active {
+  color: red;
+}
+
+.wishlist:hover {
+  transform: scale(1.15);
+}
