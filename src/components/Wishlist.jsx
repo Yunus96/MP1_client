@@ -17,7 +17,7 @@ function Wishlist() {
     return (
       <div className="container my-5 text-center">
         <h4>My Wishlist</h4>
-        <p className="text-muted mt-3">Your wishlist is empty ❤️</p>
+        <p className="text-muted mt-3">Your wishlist is empty ❤️ </p>
       </div>
     );
   }
