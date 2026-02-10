@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useCart } from "../context/CartContext";
+import { useShop } from "../context/ShopContext";
 
 function ProductListing() {
   const [products, setProducts] = useState([]);
@@ -12,7 +12,7 @@ function ProductListing() {
   const [selectedRating, setSelectedRating] = useState(null);
   const [sortOrder, setSortOrder] = useState(null);
 
-  const { addToCart, cartItems } = useCart();
+  const { addToCart, cartItems, wishlistItems, toggleWishlist } = useShop();
 
   //  API call on component mount
   useEffect(() => {
@@ -97,32 +97,6 @@ function ProductListing() {
       return 0; // no sorting
     });
 
-  const handleAddToCart = async (productId) => {
-    try {
-      const res = await fetch("https://zcr45k-5000.csb.app/api/cart", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user: "user123", // later replace with logged-in user
-          productId,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to add product to cart");
-      }
-
-      const data = await res.json();
-      console.log("Added to cart:", data);
-
-      alert("Product added to cart ");
-    } catch (error) {
-      console.error(error);
-      alert("Error adding product to cart");
-    }
-  };
   return (
     <div className="container-fluid mt-4">
       <div className="row">
@@ -222,12 +196,17 @@ function ProductListing() {
           <div className="row g-4">
             {filteredProducts.map((item, index) => {
               const isInCart = cartItems.some((c) => c.productId === item._id);
+              const isWishlisted = wishlistItems.some(
+                (w) => w.productId === item._id
+              );
+
               return (
                 <div className="col-md-3" key={index}>
                   <div className="product-card">
                     <div className="image-wrapper">
                       <span
-                        className={`wishlist ${index === 0 ? "active" : ""}`}
+                        className={`wishlist ${isWishlisted ? "active" : ""}`}
+                        onClick={() => toggleWishlist(item)}
                       >
                         ♥
                       </span>

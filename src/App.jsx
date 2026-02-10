@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { CartProvider } from "./context/CartContext";
+import { ShopProvider } from "./context/ShopContext";
 import "./App.css";
 
 import Nav from "./components/Nav";
@@ -13,7 +13,7 @@ import {
 
 function App() {
   return (
-    <CartProvider>
+    <ShopProvider>
       <BrowserRouter>
         <Nav />
         <Routes>
@@ -25,7 +25,7 @@ function App() {
           <Route path="/category/:categoryname" element={<ProductListPage />} />
         </Routes>
       </BrowserRouter>
-    </CartProvider>
+    </ShopProvider>
   );
 }
 
