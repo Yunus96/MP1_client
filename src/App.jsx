@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { ShopProvider } from "./context/ShopContext";
+
 import "./App.css";
 
 import Nav from "./components/Nav";
@@ -15,6 +18,7 @@ function App() {
   return (
     <ShopProvider>
       <BrowserRouter>
+        <ToastContainer position="top-right" autoClose={2000} />
         <Nav />
         <Routes>
           <Route path="/" element={<HomePage />} />
