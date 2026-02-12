@@ -48,18 +48,15 @@ function Cart() {
 
     //  API Call
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/cart/quantity`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            user: "user123",
-            productId,
-            action,
-          }),
-        }
-      );
+      const res = await fetch(`${API_BASE_URL}/cart/quantity`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user: "user123",
+          productId,
+          action,
+        }),
+      });
 
       if (!res.ok) {
         throw new Error("Quantity update failed");
@@ -68,6 +65,33 @@ function Cart() {
       console.error("Quantity update failed. Rolling back...", error);
 
       // Rollback UI
+      setCartItems(previousCart);
+    }
+  };
+
+  const handleRemoveFromCart = async (productId) => {
+    const previousCart = [...cartItems];
+
+    // Optimistic UI update
+    setCartItems((prev) =>
+      prev.filter((item) => item.productId._id !== productId)
+    );
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/cart`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user: USER_ID,
+          productId,
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Remove from cart failed");
+      }
+    } catch (error) {
+      console.error("Remove from cart failed. Rolling back...", error);
       setCartItems(previousCart);
     }
   };
@@ -122,6 +146,15 @@ function Cart() {
                     }
                   >
                     +
+                  </button>
+                  <button
+                    className="btn btn-secondary w-100 mt-3"
+                    onClick={() => handleRemoveFromCart(item.productId._id)}
+                  >
+                    Remove From Cart
+                  </button>
+                  <button className="btn btn-outline-secondary w-100 mt-2">
+                    Move to Wishlist
                   </button>
                 </div>
               </div>
