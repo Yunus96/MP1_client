@@ -100,7 +100,7 @@ export function ShopProvider({ children }) {
   const toggleWishlist = async (product) => {
     const isWishlisted = wishlistItems.some((w) => w._id === product._id);
 
-  try {
+    try {
       const res = await fetch("https://mp-1-server.vercel.app/api/wishlist", {
         method: isWishlisted ? "DELETE" : "POST",
         headers: { "Content-Type": "application/json" },
@@ -136,6 +136,7 @@ export function ShopProvider({ children }) {
       value={{
         /* cart */
         cartItems,
+        setCartItems,
         addToCart,
         loadingCart,
 
