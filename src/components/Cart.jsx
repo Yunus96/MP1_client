@@ -232,7 +232,7 @@ function Cart() {
             </div>
 
             <div className="price-line">
-              <span>Delivery Charges</span>
+              <span>Delivery Charges </span>
               <span>₹{DELIVERY_CHARGE}</span>
             </div>
 
