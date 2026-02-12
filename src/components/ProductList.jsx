@@ -13,6 +13,7 @@ function ProductListing() {
   const [sortOrder, setSortOrder] = useState(null);
 
   const { addToCart, cartItems, wishlistItems, toggleWishlist } = useShop();
+  
 
   //  API call on component mount
   useEffect(() => {
@@ -34,7 +35,7 @@ function ProductListing() {
         setMaxPrice(max);
         setPriceRange(max); // default = show all
 
-        // 🔹 Fetch categories
+        //  Fetch categories
         const categoryRes = await fetch(
           "https://mp-1-server.vercel.app/api/categories"
         );
@@ -49,6 +50,8 @@ function ProductListing() {
     };
     fetchProducts();
   }, []);
+
+  console.log("product"+ products[0].category)
   if (loading) {
     return (
       <div className="text-center mt-5">
@@ -199,7 +202,6 @@ function ProductListing() {
               const isWishlisted = wishlistItems.some(
                 (w) => w.productId === item._id
               );
-
               return (
                 <div className="col-md-3" key={index}>
                   <div className="product-card">

@@ -1,11 +1,11 @@
 import Cart from "../components/Cart";
 
 function CartPage() {
-  return(
+  return (
     <>
-        <Cart />
+      <Cart />
     </>
-  )
+  );
 }
 
 export default CartPage;

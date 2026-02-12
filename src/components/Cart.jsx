@@ -1,46 +1,132 @@
-
+import React from "react";
+import { useShop } from "../context/ShopContext";
+import { API_BASE_URL } from "../config/api";
 
 function Cart() {
+  const { cartItems, setCartItems, loadingCart } = useShop();
+
+  const USER_ID = "user123";
+
+  if (loadingCart) {
+    return (
+      <div className="text-center mt-5">
+        <h5>Loading cart...</h5>
+      </div>
+    );
+  }
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="container my-5 text-center">
+        <h5>MY CART</h5>
+        <p className="text-muted mt-3">Your cart is empty 🛒</p>
+      </div>
+    );
+  }
+
+  /* ---------------- QUANTITY UPDATE ---------------- */
+
+  const handleQuantityChange = async (productId, action) => {
+    //  Save previous state (for rollback)
+    const previousCart = [...cartItems];
+    console.log(productId + " " + action);
+
+    // Optimistic update
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.productId._id === productId
+          ? {
+              ...item,
+              quantity:
+                action === "increment"
+                  ? item.quantity + 1
+                  : Math.max(1, item.quantity - 1),
+            }
+          : item
+      )
+    );
+
+    //  API Call
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/cart/quantity`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user: "user123",
+            productId,
+            action,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Quantity update failed");
+      }
+    } catch (error) {
+      console.error("Quantity update failed. Rolling back...", error);
+
+      // Rollback UI
+      setCartItems(previousCart);
+    }
+  };
+
+  /* ---------------- PRICE CALCULATION ---------------- */
+
+  const DELIVERY_CHARGE = 49;
+
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.quantity * item.productId.price,
+    0
+  );
+
+  const discount = totalPrice * 0.5;
+  const finalAmount = totalPrice - discount + DELIVERY_CHARGE;
+
   return (
     <div className="container my-5">
-      <h5 className="text-center mb-4">MY CART (1)</h5>
+      <h5 className="text-center mb-4">MY CART ({cartItems.length})</h5>
 
       <div className="row justify-content-center">
-        {/* LEFT: CART ITEM */}
+        {/* LEFT: CART ITEMS */}
         <div className="col-md-7">
-          <div className="cart-item d-flex">
-            <div className="cart-image">
-              <img
-                src="https://pngimg.com/uploads/jacket/jacket_PNG8058.png"
-                alt="product"
-              />
-            </div>
-
-            <div className="cart-details ms-4">
-              <h6>Men Premium Jacket</h6>
-
-              <div className="price-row">
-                <span className="price">₹2000</span>
-                <span className="old-price ms-2">₹3999</span>
+          {cartItems.map((item) => (
+            <div className="cart-item d-flex mb-4" key={item._id}>
+              <div className="cart-image">
+                <img src={item.productId.images[0]} alt={item.productId.name} />
               </div>
 
-              <div className="discount">50% off</div>
+              <div className="cart-details ms-4">
+                <h6>{item.productId.name}</h6>
 
-              <div className="quantity mt-2">
-                Quantity :
-                <button className="qty-btn ms-2">-</button>
-                <span className="qty-number">1</span>
-                <button className="qty-btn">+</button>
+                <div className="price-row">
+                  <span className="price">₹{item.productId.price}</span>
+                </div>
+
+                <div className="quantity mt-2">
+                  Quantity :
+                  <button
+                    className="qty-btn ms-2"
+                    onClick={() =>
+                      handleQuantityChange(item.productId._id, "decrement")
+                    }
+                  >
+                    -
+                  </button>
+                  <span className="qty-number mx-2">{item.quantity}</span>
+                  <button
+                    className="qty-btn"
+                    onClick={() =>
+                      handleQuantityChange(item.productId._id, "increment")
+                    }
+                  >
+                    +
+                  </button>
+                </div>
               </div>
-
-              <button className="btn btn-secondary w-100 mt-3">
-                Remove From Cart
-              </button>
-              <button className="btn btn-outline-secondary w-100 mt-2">
-                Move to Wishlist
-              </button>
             </div>
-          </div>
+          ))}
         </div>
 
         {/* RIGHT: PRICE DETAILS */}
@@ -50,34 +136,28 @@ function Cart() {
             <hr />
 
             <div className="price-line">
-              <span>Price (1 item)</span>
-              <span>₹2000</span>
+              <span>Price ({cartItems.length} items)</span>
+              <span>₹{totalPrice}</span>
             </div>
 
             <div className="price-line">
               <span>Discount</span>
-              <span className="text-success">- ₹1000</span>
+              <span className="text-success">- ₹{discount}</span>
             </div>
 
             <div className="price-line">
               <span>Delivery Charges</span>
-              <span>₹499</span>
+              <span>₹{DELIVERY_CHARGE}</span>
             </div>
 
             <hr />
 
             <div className="price-line total">
               <span>TOTAL AMOUNT</span>
-              <span>₹2499</span>
+              <span>₹{finalAmount}</span>
             </div>
 
-            <p className="save-text mt-2">
-              You will save ₹1000 on this order
-            </p>
-
-            <button className="btn btn-primary w-100 mt-3">
-              PLACE ORDER
-            </button>
+            <button className="btn btn-primary w-100 mt-3">PLACE ORDER</button>
           </div>
         </div>
       </div>
