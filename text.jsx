@@ -58,12 +58,6 @@ function Cart() {
                   <span className="qty-number mx-2">{item.quantity}</span>
                   <button className="qty-btn">+</button>
                 </div>
-                <button className="btn btn-secondary w-100 mt-3">
-                  Remove From Cart
-                </button>
-                <button className="btn btn-outline-secondary w-100 mt-2">
-                  Move to Wishlist
-                </button>
               </div>
             </div>
           ))}
