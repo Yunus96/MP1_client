@@ -1,4 +1,5 @@
 import React from "react";
+import { toast } from "react-toastify";
 import { useShop } from "../context/ShopContext";
 import { API_BASE_URL } from "../config/api";
 
@@ -29,7 +30,6 @@ function Cart() {
   const handleQuantityChange = async (productId, action) => {
     //  Save previous state (for rollback)
     const previousCart = [...cartItems];
-    console.log(productId + " " + action);
 
     // Optimistic update
     setCartItems((prev) =>
@@ -45,6 +45,7 @@ function Cart() {
           : item
       )
     );
+    toast.success("Quantity updated");
 
     //  API Call
     try {
@@ -60,6 +61,7 @@ function Cart() {
 
       if (!res.ok) {
         throw new Error("Quantity update failed");
+        toast.error("Quantity update failed");
       }
     } catch (error) {
       console.error("Quantity update failed. Rolling back...", error);
@@ -69,6 +71,7 @@ function Cart() {
     }
   };
 
+  /* ---------------- Remove from Cart ---------------- */
   const handleRemoveFromCart = async (productId) => {
     const previousCart = [...cartItems];
 
@@ -93,6 +96,53 @@ function Cart() {
     } catch (error) {
       console.error("Remove from cart failed. Rolling back...", error);
       setCartItems(previousCart);
+    }
+  };
+
+  /* ---------------- move to wishlist ---------------- */
+  const handleMoveToWishlist = async (productId) => {
+    const previousCart = [...cartItems];
+
+    // Optimistic UI update
+    setCartItems((prev) =>
+      prev.filter((item) => item.productId._id !== productId)
+    );
+
+    try {
+      //  Add to Wishlist
+      const wishlistRes = await fetch(`${API_BASE_URL}/wishlist`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user: "user123@gmail.com",
+          productId,
+        }),
+      });
+
+      if (!wishlistRes.ok) {
+        throw new Error("Failed to add to wishlist");
+      }
+
+      //  Remove from Cart
+      const cartRes = await fetch(`${API_BASE_URL}/cart`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user: USER_ID,
+          productId,
+        }),
+      });
+
+      if (!cartRes.ok) {
+        throw new Error("Failed to remove from cart");
+      }
+
+      toast.success("Item moved to wishlist");
+    } catch (error) {
+      console.error("Move to wishlist failed. Rolling back...", error);
+
+      setCartItems(previousCart);
+      toast.error("Failed to move item. Please try again.");
     }
   };
 
@@ -153,7 +203,10 @@ function Cart() {
                   >
                     Remove From Cart
                   </button>
-                  <button className="btn btn-outline-secondary w-100 mt-2">
+                  <button
+                    className="btn btn-outline-secondary w-100 mt-2"
+                    onClick={() => handleMoveToWishlist(item.productId._id)}
+                  >
                     Move to Wishlist
                   </button>
                 </div>
@@ -190,7 +243,7 @@ function Cart() {
               <span>₹{finalAmount}</span>
             </div>
 
-            <button className="btn btn-primary w-100 mt-3">PLACE ORDER</button>
+            <button className="btn btn-primary w-100 mt-3">Checkout</button>
           </div>
         </div>
       </div>
