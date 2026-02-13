@@ -1,5 +1,7 @@
 import React from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
 import { useShop } from "../context/ShopContext";
 import { API_BASE_URL } from "../config/api";
 
@@ -7,6 +9,7 @@ function Cart() {
   const { cartItems, setCartItems, loadingCart } = useShop();
 
   const USER_ID = "user123";
+  const navigate = useNavigate();
 
   if (loadingCart) {
     return (
@@ -243,7 +246,12 @@ function Cart() {
               <span>₹{finalAmount}</span>
             </div>
 
-            <button className="btn btn-primary w-100 mt-3">Checkout</button>
+            <button
+              className="btn btn-primary w-100 mt-3"
+              onClick={() => navigate("/checkout")}
+            >
+              Checkout
+            </button>
           </div>
         </div>
       </div>
