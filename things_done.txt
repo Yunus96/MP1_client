@@ -1,0 +1,4 @@
+1. Adding address functionality done
+2. Showing all address.
+3. Edit saved address.
+4. delete address done.
