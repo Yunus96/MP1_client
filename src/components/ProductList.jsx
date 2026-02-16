@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useShop } from "../context/ShopContext";
+<<<<<<< HEAD
+=======
+import ProductCard from "./ProductCard";
+
+>>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
 
 function ProductListing() {
   const [products, setProducts] = useState([]);
@@ -51,7 +56,10 @@ function ProductListing() {
     fetchProducts();
   }, []);
 
+<<<<<<< HEAD
   console.log("product"+ products[0].category)
+=======
+>>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
   if (loading) {
     return (
       <div className="text-center mt-5">
@@ -203,6 +211,7 @@ function ProductListing() {
                 (w) => w.productId === item._id
               );
               return (
+<<<<<<< HEAD
                 <div className="col-md-3" key={index}>
                   <div className="product-card">
                     <div className="image-wrapper">
@@ -239,11 +248,29 @@ function ProductListing() {
                       {isInCart ? "Go to Cart" : "Add to Cart"}
                     </button>
                   </div>
+=======
+                <div className="col-md-3" key={item._id}>
+                  <ProductCard
+                    item={item}
+                    isInCart={cartItems.some(
+                      (c) => c.productId === item._id
+                    )}
+                    isWishlisted={wishlistItems.some(
+                      (w) => w.productId === item._id
+                    )}
+                    addToCart={addToCart}
+                    toggleWishlist={toggleWishlist}
+                  />
+>>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
                 </div>
               );
             })}
           </div>
         </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
       </div>
     </div>
   );

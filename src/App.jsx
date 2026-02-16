@@ -13,6 +13,7 @@ import {
   ProductListPage,
   WishlistPage,
   CheckoutPage,
+  ProfilePage
 } from "./pages";
 
 function App() {
@@ -29,6 +30,8 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/category/:categoryname" element={<ProductListPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+
         </Routes>
       </BrowserRouter>
     </ShopProvider>

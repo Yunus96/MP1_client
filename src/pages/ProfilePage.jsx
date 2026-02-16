@@ -1,4 +1,3 @@
-import React from "react";
 import ProfileDetails from "../components/ProfileDetails";
 import AddressManager from "../components/AddressManager";
 import OrderHistory from "../components/OrderHistory";
