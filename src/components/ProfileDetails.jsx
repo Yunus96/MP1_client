@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-import React from "react";
-=======
->>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
 
 function ProfileDetails() {
   const user = {

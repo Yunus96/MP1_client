@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useShop } from "../context/ShopContext";
-<<<<<<< HEAD
-=======
 import ProductCard from "./ProductCard";
 
->>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
 
 function ProductListing() {
   const [products, setProducts] = useState([]);
@@ -56,10 +53,6 @@ function ProductListing() {
     fetchProducts();
   }, []);
 
-<<<<<<< HEAD
-  console.log("product"+ products[0].category)
-=======
->>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
   if (loading) {
     return (
       <div className="text-center mt-5">
@@ -211,44 +204,6 @@ function ProductListing() {
                 (w) => w.productId === item._id
               );
               return (
-<<<<<<< HEAD
-                <div className="col-md-3" key={index}>
-                  <div className="product-card">
-                    <div className="image-wrapper">
-                      <span
-                        className={`wishlist ${isWishlisted ? "active" : ""}`}
-                        onClick={() => toggleWishlist(item)}
-                      >
-                        ♥
-                      </span>
-                      <img
-                        src={
-                          item.images?.[0] ||
-                          "https://www.pexels.com/photo/a-bouquet-of-roses-and-lily-flower-buds-11393582/"
-                        }
-                        alt={item.name}
-                      />
-                    </div>
-                    <div className="text-center mt-3">
-                      <p className="product-name mb-1">{item.name}</p>
-                      <small className="text-muted">⭐ {item.rating}</small>
-                      <h6 className="fw-bold">₹{item.price}</h6>
-                    </div>
-
-                    <button
-                      className={`btn w-100 ${
-                        isInCart ? "btn-primary" : "btn-secondary"
-                      }`}
-                      onClick={() => {
-                        if (!isInCart) {
-                          addToCart(item._id);
-                        }
-                      }}
-                    >
-                      {isInCart ? "Go to Cart" : "Add to Cart"}
-                    </button>
-                  </div>
-=======
                 <div className="col-md-3" key={item._id}>
                   <ProductCard
                     item={item}
@@ -261,16 +216,11 @@ function ProductListing() {
                     addToCart={addToCart}
                     toggleWishlist={toggleWishlist}
                   />
->>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
                 </div>
               );
             })}
           </div>
         </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
       </div>
     </div>
   );
