@@ -3,7 +3,7 @@ import { useShop } from "../context/ShopContext";
 import ProductCard from "./ProductCard";
 
 
-function ProductListing() {
+function ProductListing({ searchQuery }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,6 +13,7 @@ function ProductListing() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedRating, setSelectedRating] = useState(null);
   const [sortOrder, setSortOrder] = useState(null);
+
 
   const { addToCart, cartItems, wishlistItems, toggleWishlist } = useShop();
   
@@ -78,28 +79,41 @@ function ProductListing() {
     );
   };
 
-  const filteredProducts = products
-    .filter((item) => {
-      const matchesPrice = item.price <= priceRange;
+const filteredProducts = products
+  .filter((item) => {
+    const matchesSearch =
+      !searchQuery ||
+      item.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-      const matchesCategory =
-        selectedCategories.length === 0 ||
-        selectedCategories.includes(item.category);
+    const matchesPrice = item.price <= priceRange;
 
-      const matchesRating =
-        selectedRating === null || item.rating >= selectedRating;
+    const matchesCategory =
+      selectedCategories.length === 0 ||
+      selectedCategories.includes(item.category);
 
-      return matchesPrice && matchesCategory && matchesRating;
-    })
+    const matchesRating =
+      selectedRating === null || item.rating >= selectedRating;
+
+    return (
+      matchesSearch &&
+      matchesPrice &&
+      matchesCategory &&
+      matchesRating
+    );
+  })
     .sort((a, b) => {
-      if (sortOrder === "lowToHigh") {
-        return a.price - b.price;
-      }
-      if (sortOrder === "highToLow") {
-        return b.price - a.price;
-      }
-      return 0; // no sorting
-    });
+    if (sortOrder === "lowToHigh") {
+      return a.price - b.price;
+    }
+
+    if (sortOrder === "highToLow") {
+      return b.price - a.price;
+    }
+
+    return 0; // No sorting
+  });
+
+
 
   return (
     <div className="container-fluid mt-4">

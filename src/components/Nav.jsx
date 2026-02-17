@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function Nav() {
+export default function Nav({ setSearchQuery }) {
   return (
     <header className="nav-wrapper">
       <nav className="nav">
@@ -15,7 +15,7 @@ export default function Nav() {
         <div className="nav-center">
           <div className="search-box">
             <span className="search-icon">🔍</span>
-            <input type="text" placeholder="Search" />
+            <input type="text" placeholder="Search" onChange={(e) => setSearchQuery(e.target.value)}/>
           </div>
         </div>
 

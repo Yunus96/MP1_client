@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,15 +17,18 @@ import {
   ProfilePage
 } from "./pages";
 
+
 function App() {
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
     <ShopProvider>
       <BrowserRouter>
         <ToastContainer position="top-right" autoClose={2000} />
-        <Nav />
+        <Nav setSearchQuery={setSearchQuery} />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/products" element={<ProductListPage />} />
+          <Route path="/products" element={<ProductListPage searchQuery={searchQuery} />} />
           <Route path="/products/detail" element={<ProductDetailPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/cart" element={<CartPage />} />

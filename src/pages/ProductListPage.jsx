@@ -1,9 +1,9 @@
 import ProductListing from "../components/ProductList";
 
-function ProductListPage() {
+function ProductListPage({ searchQuery }) {
   return(
     <>
-        <ProductListing />
+        <ProductListing searchQuery={searchQuery}/>
     </>
   )
 }
