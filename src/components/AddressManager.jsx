@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "../config/api";
 
-const USER_EMAIL = "user123@gmail.com";
+
+const userId = "6989a792d8e13444f432bacd";
 
 function AddressManager({ selectedAddress, setSelectedAddress }) {
   const [addresses, setAddresses] = useState([]);
@@ -14,7 +15,7 @@ function AddressManager({ selectedAddress, setSelectedAddress }) {
   const fetchAddresses = async () => {
     try {
       const res = await fetch(
-        `${API_BASE_URL}/address/${USER_EMAIL}`
+        `${API_BASE_URL}/address/${userId}`
       );
   
       if (!res.ok) throw new Error();
@@ -85,18 +86,18 @@ function AddressManager({ selectedAddress, setSelectedAddress }) {
   
     try {
       setLoading(true);
-  
+
       const url = editAddressId
         ? `${API_BASE_URL}/address/${editAddressId}`
         : `${API_BASE_URL}/address`;
   
+
       const method = editAddressId ? "PUT" : "POST";
-  
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          user: USER_EMAIL,
+          userId,
           address: formData,
         }),
       });

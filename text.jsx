@@ -1,42 +1,58 @@
+import React from "react";
+import { toast } from "react-toastify";
 
-function OrderHistory() {
-  const orders = [
-    {
-      id: "ORD123",
-      date: "10 Feb 2026",
-      totalAmount: 1499,
-      status: "Delivered",
-    },
-    {
-      id: "ORD124",
-      date: "15 Feb 2026",
-      totalAmount: 899,
-      status: "Shipped",
-    },
-  ];
+const DELIVERY_CHARGE = 49;
+
+function OrderSummary({ cartItems, selectedAddress }) {
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.quantity * item.productId.price,
+    0
+  );
+
+  const discount = totalPrice * 0.5;
+  const finalAmount = totalPrice - discount + DELIVERY_CHARGE;
+
+  const handlePlaceOrder = () => {
+    if (!selectedAddress) {
+      toast.error("Please select delivery address");
+      return;
+    }
+
+    toast.success("Order placed successfully 🎉");
+  };
 
   return (
-    <div>
-      <h5>Order History</h5>
+    <div className="price-box">
+      <h6>Order Summary</h6>
       <hr />
 
-      {orders.length === 0 ? (
-        <p>No previous orders.</p>
-      ) : (
-        orders.map((order) => (
-          <div
-            key={order.id}
-            className="border p-3 mb-3 rounded"
-          >
-            <p><strong>Order ID:</strong> {order.id}</p>
-            <p><strong>Date:</strong> {order.date}</p>
-            <p><strong>Total:</strong> ₹{order.totalAmount}</p>
-            <p><strong>Status:</strong> {order.status}</p>
-          </div>
-        ))
-      )}
+      <div className="price-line">
+        <span>Items</span>
+        <span>₹{totalPrice}</span>
+      </div>
+
+      <div className="price-line">
+        <span>Discount</span>
+        <span className="text-success">- ₹{discount}</span>
+      </div>
+
+      <div className="price-line">
+        <span>Delivery</span>
+        <span>₹{DELIVERY_CHARGE}</span>
+      </div>
+
+      <hr />
+
+      <div className="price-line total">
+        <strong>Total</strong>
+        <strong>₹{finalAmount}</strong>
+      </div>
+
+      <button className="btn btn-success w-100 mt-3" onClick={handlePlaceOrder}>
+        Place Order
+      </button>
     </div>
   );
 }
 
-export default OrderHistory;
+export default OrderSummary;
