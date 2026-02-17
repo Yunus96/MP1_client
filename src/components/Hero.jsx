@@ -1,14 +1,14 @@
 import { useNavigate } from "react-router-dom";
 
-const categories = ["Men", "Women", "Kids", "Electronics", "Home"];
+const categories = ["Fashion", "Fitness", "Books", "Electronics", "Home & Kitchen"];
 
 const categoryImages = {
-  Men: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=400",
-  Women: "https://images.unsplash.com/photo-1520975916090-3105956dac38?w=400",
-  Kids: "https://images.unsplash.com/photo-1603252109303-2751441dd157?w=400",
+  Fashion: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=400",
+  Fitness: "https://images.unsplash.com/photo-1520975916090-3105956dac38?w=400",
+  Books: "https://images.unsplash.com/photo-1603252109303-2751441dd157?w=400",
   Electronics:
     "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400",
-  Home: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=400",
+  "Home & Kitchen": "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=400",
 };
 
 function Hero() {

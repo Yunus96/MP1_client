@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useShop } from "../context/ShopContext";
 import ProductCard from "./ProductCard";
+import { useParams } from "react-router-dom";
+
 
 
 function ProductListing({ searchQuery }) {
@@ -16,7 +18,7 @@ function ProductListing({ searchQuery }) {
 
 
   const { addToCart, cartItems, wishlistItems, toggleWishlist } = useShop();
-  
+  const { categoryname } = useParams();
 
   //  API call on component mount
   useEffect(() => {
@@ -54,6 +56,19 @@ function ProductListing({ searchQuery }) {
     fetchProducts();
   }, []);
 
+    useEffect(() => {
+      if (categoryname && categories.length > 0) {
+        const matchedCategory = categories.find(
+          (cat) =>
+            cat.name.toLowerCase() === categoryname.toLowerCase()
+        );
+
+        if (matchedCategory) {
+          setSelectedCategories([matchedCategory._id]);
+        }
+      }
+    }, [categoryname, categories]);
+
   if (loading) {
     return (
       <div className="text-center mt-5">
@@ -70,14 +85,14 @@ function ProductListing({ searchQuery }) {
     );
   }
 
-  const handleCategoryChange = (categoryId) => {
-    setSelectedCategories(
-      (prev) =>
-        prev.includes(categoryId)
-          ? prev.filter((id) => id !== categoryId) // uncheck
-          : [...prev, categoryId] // check
-    );
-  };
+      const handleCategoryChange = (categoryId) => {
+        setSelectedCategories(
+          (prev) =>
+            prev.includes(categoryId)
+              ? prev.filter((id) => id !== categoryId) // uncheck
+              : [...prev, categoryId] // check
+        );
+      };
 
 const filteredProducts = products
   .filter((item) => {
