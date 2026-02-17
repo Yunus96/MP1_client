@@ -20,48 +20,54 @@ function OrderSummary({ cartItems, selectedAddress }) {
   const discount = totalPrice * 0.5;
   const finalAmount = totalPrice - discount + DELIVERY_CHARGE;
 
-  const handlePlaceOrder = async () => {
-    if (!selectedAddress) {
-      toast.error("Please select delivery address");
-      return;
+const handlePlaceOrder = async () => {
+  if (!selectedAddress) {
+    toast.error("Please select delivery address");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const res = await fetch(`${API_BASE_URL}/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: USER_ID,
+        addressId: selectedAddress,
+        paymentMethod: "COD",
+      }),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData?.message || "Failed to place order");
     }
 
-    try {
-      setLoading(true);
+    const response = await res.json();
 
-      const res = await fetch(`${API_BASE_URL}/orders`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: USER_ID,
-          addressId: selectedAddress,
-          paymentMethod: "COD",
-        }),
-      });
+    const order = response?.data?.order;
 
-      if (!res.ok) {
-        throw new Error("Failed to place order");
-      }
+    toast.success(
+      `Order placed successfully 🎉 (Order ID: ${order._id})`
+    );
 
-      const response = await res.json();
+    // Clear cart in frontend
+    setCartItems([]);
 
-      toast.success("Order placed successfully 🎉");
+    // Redirect to order history or order details page
+    navigate(`/profile`);
 
-      // Clear cart in frontend
-      setCartItems([]);
+  } catch (error) {
+    console.error("Order Error:", error);
+    toast.error(error.message || "Failed to place order");
+  } finally {
+    setLoading(false);
+  }
+};
 
-      // Redirect to order history
-      navigate(`/orders/${USER_ID}`);
-
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to place order");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="price-box">
