@@ -1,355 +1,42 @@
-<<<<<<< HEAD
-import React from "react";
-import { useShop } from "../context/ShopContext";
 
-function Cart() {
-  const { cartItems, loadingCart } = useShop();
-
-  if (loadingCart) {
-    return (
-      <div className="text-center mt-5">
-        <h5>Loading cart...</h5>
-=======
-import React, { useEffect, useState } from "react";
-import { useShop } from "../context/ShopContext";
-
-function ProductListing() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [priceRange, setPriceRange] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(0);
-  const [categories, setCategories] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedRating, setSelectedRating] = useState(null);
-  const [sortOrder, setSortOrder] = useState(null);
-
-  const { addToCart, cartItems, wishlistItems, toggleWishlist } = useShop();
-  
-
-  //  API call on component mount
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch("https://mp-1-server.vercel.app/api/products");
-        if (!res.ok) {
-          throw new Error("Failed to fetch products");
-        }
-
-        const json = await res.json();
-        const productsData = json.data.products;
-
-        setProducts(productsData);
-
-        // derive price range
-        const prices = productsData.map((p) => p.price);
-        const max = Math.max(...prices);
-        setMaxPrice(max);
-        setPriceRange(max); // default = show all
-
-        //  Fetch categories
-        const categoryRes = await fetch(
-          "https://mp-1-server.vercel.app/api/categories"
-        );
-        const categoryJson = await categoryRes.json();
-
-        setCategories(categoryJson.data.categories);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProducts();
-  }, []);
-
-  console.log("product"+ products[0].category)
-  if (loading) {
-    return (
-      <div className="text-center mt-5">
-        <h5>Loading products...</h5>
->>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
-      </div>
-    );
-  }
-
-<<<<<<< HEAD
-  if (cartItems.length === 0) {
-    return (
-      <div className="container my-5 text-center">
-        <h5>MY CART</h5>
-        <p className="text-muted mt-3">Your cart is empty 🛒</p>
-=======
-  if (error) {
-    return (
-      <div className="text-center mt-5 text-danger">
-        <h5>{error}</h5>
->>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
-      </div>
-    );
-  }
-
-<<<<<<< HEAD
-  // Temporary product lookup (until product map / populate API exists)
-  const DELIVERY_CHARGE = 49;
-
-  const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.quantity * 2000,
-    0
-  );
-
-  const discount = totalPrice * 0.5;
-  const finalAmount = totalPrice - discount + DELIVERY_CHARGE;
+function OrderHistory() {
+  const orders = [
+    {
+      id: "ORD123",
+      date: "10 Feb 2026",
+      totalAmount: 1499,
+      status: "Delivered",
+    },
+    {
+      id: "ORD124",
+      date: "15 Feb 2026",
+      totalAmount: 899,
+      status: "Shipped",
+    },
+  ];
 
   return (
-    <div className="container my-5">
-      <h5 className="text-center mb-4">MY CART ({cartItems.length})</h5>
-      <div className="row justify-content-center">
-        {/* LEFT: CART ITEMS */}
-        {console.log(cartItems)}
-        <div className="col-md-7">
-          {" "}
-          {cartItems.map((item) => (
-            <div className="cart-item d-flex mb-4" key={item._id}>
-              <div className="cart-image">
-                <img src={item.productId.images[0]} alt={item.productId.name} />
-              </div>
+    <div>
+      <h5>Order History</h5>
+      <hr />
 
-              <div className="cart-details ms-4">
-                <h6>Product ID: {item._id}</h6>
-                <div className="price-row">
-                  <span className="price">₹{item.productId.price}</span>
-                  <span className="old-price ms-2">₹3999</span>
-                </div>
-                <div className="discount">50% off</div>
-                <div className="quantity mt-2">
-                  Quantity :<button className="qty-btn ms-2">-</button>
-                  <span className="qty-number mx-2">{item.quantity}</span>
-                  <button className="qty-btn">+</button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* RIGHT: PRICE DETAILS */}
-        <div className="col-md-4">
-          <div className="price-box">
-            <h6>PRICE DETAILS</h6>
-            <hr />
-
-            <div className="price-line">
-              <span>Price ({cartItems.length} items)</span>
-              <span>₹{totalPrice}</span>
-            </div>
-
-            <div className="price-line">
-              <span>Discount</span>
-              <span className="text-success">- ₹{discount}</span>
-            </div>
-
-            <div className="price-line">
-              <span>Delivery Charges</span>
-              <span>₹{DELIVERY_CHARGE}</span>
-            </div>
-
-            <hr />
-
-            <div className="price-line total">
-              <span>TOTAL AMOUNT</span>
-              <span>₹{finalAmount}</span>
-            </div>
-
-            <p className="save-text mt-2">
-              You will save ₹{discount} on this order
-            </p>
-
-            <button className="btn btn-primary w-100 mt-3">PLACE ORDER</button>
-=======
-  const handleCategoryChange = (categoryId) => {
-    setSelectedCategories(
-      (prev) =>
-        prev.includes(categoryId)
-          ? prev.filter((id) => id !== categoryId) // uncheck
-          : [...prev, categoryId] // check
-    );
-  };
-
-  const filteredProducts = products
-    .filter((item) => {
-      const matchesPrice = item.price <= priceRange;
-
-      const matchesCategory =
-        selectedCategories.length === 0 ||
-        selectedCategories.includes(item.category);
-
-      const matchesRating =
-        selectedRating === null || item.rating >= selectedRating;
-
-      return matchesPrice && matchesCategory && matchesRating;
-    })
-    .sort((a, b) => {
-      if (sortOrder === "lowToHigh") {
-        return a.price - b.price;
-      }
-      if (sortOrder === "highToLow") {
-        return b.price - a.price;
-      }
-      return 0; // no sorting
-    });
-
-  return (
-    <div className="container-fluid mt-4">
-      <div className="row">
-        {/* FILTERS */}
-        <div className="col-md-3 filter-section px-4">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <h5>Filters</h5>
-            <span
-              className="clear-text"
-              onClick={() => {
-                setPriceRange(maxPrice);
-                setSelectedCategories([]);
-                setSelectedRating(null);
-              }}
-            >
-              Clear
-            </span>
+      {orders.length === 0 ? (
+        <p>No previous orders.</p>
+      ) : (
+        orders.map((order) => (
+          <div
+            key={order.id}
+            className="border p-3 mb-3 rounded"
+          >
+            <p><strong>Order ID:</strong> {order.id}</p>
+            <p><strong>Date:</strong> {order.date}</p>
+            <p><strong>Total:</strong> ₹{order.totalAmount}</p>
+            <p><strong>Status:</strong> {order.status}</p>
           </div>
-          {/* Price */}
-          <h6>Price</h6>
-          <input
-            type="range"
-            className="form-range"
-            min="0"
-            max={maxPrice}
-            value={priceRange}
-            onChange={(e) => setPriceRange(Number(e.target.value))}
-          />{" "}
-          <div className="d-flex justify-content-between text-muted mb-4">
-            <span>₹0</span>
-            <span>₹{Math.floor(maxPrice / 2)}</span>
-            <span>₹{maxPrice}</span>
-          </div>
-          {/* Category */}
-          <h6>Category</h6>
-          {categories.map((category) => (
-            <div className="form-check" key={category._id}>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                id={category._id}
-                checked={selectedCategories.includes(category._id)}
-                onChange={() => handleCategoryChange(category._id)}
-              />
-              <label className="form-check-label" htmlFor={category._id}>
-                {category.name}
-              </label>
-            </div>
-          ))}
-          {/* Rating */}
-          <h6>Rating</h6>
-          {[5, 4, 3, 2, 1].map((r) => (
-            <div className="form-check" key={r}>
-              <input
-                className="form-check-input"
-                type="radio"
-                name="rating"
-                checked={selectedRating === r}
-                onChange={() => setSelectedRating(r)}
-              />
-              <label className="form-check-label">{r} Stars & above</label>
-            </div>
-          ))}
-          {/* Sort */}
-          <h6 className="mt-4">Sort by</h6>
-          <div className="form-check">
-            <input
-              className="form-check-input"
-              type="radio"
-              name="sort"
-              checked={sortOrder === "lowToHigh"}
-              onChange={() => setSortOrder("lowToHigh")}
-            />
-            <label className="form-check-label">Price - Low to High</label>
-          </div>
-          <div className="form-check">
-            <input
-              className="form-check-input"
-              type="radio"
-              name="sort"
-              checked={sortOrder === "highToLow"}
-              onChange={() => setSortOrder("highToLow")}
-            />
-            <label className="form-check-label">Price - High to Low</label>
-          </div>
-        </div>
-
-        {/* PRODUCTS */}
-        <div className="col-md-9">
-          <h5 className="mb-4">
-            Showing All Products{" "}
-            <span className="text-muted">
-              ( Showing {filteredProducts.length} products )
-            </span>
-          </h5>
-
-          <div className="row g-4">
-            {filteredProducts.map((item, index) => {
-              const isInCart = cartItems.some((c) => c.productId === item._id);
-              const isWishlisted = wishlistItems.some(
-                (w) => w.productId === item._id
-              );
-              return (
-                <div className="col-md-3" key={index}>
-                  <div className="product-card">
-                    <div className="image-wrapper">
-                      <span
-                        className={`wishlist ${isWishlisted ? "active" : ""}`}
-                        onClick={() => toggleWishlist(item)}
-                      >
-                        ♥
-                      </span>
-                      <img
-                        src={
-                          item.images?.[0] ||
-                          "https://www.pexels.com/photo/a-bouquet-of-roses-and-lily-flower-buds-11393582/"
-                        }
-                        alt={item.name}
-                      />
-                    </div>
-                    <div className="text-center mt-3">
-                      <p className="product-name mb-1">{item.name}</p>
-                      <small className="text-muted">⭐ {item.rating}</small>
-                      <h6 className="fw-bold">₹{item.price}</h6>
-                    </div>
-
-                    <button
-                      className={`btn w-100 ${
-                        isInCart ? "btn-primary" : "btn-secondary"
-                      }`}
-                      onClick={() => {
-                        if (!isInCart) {
-                          addToCart(item._id);
-                        }
-                      }}
-                    >
-                      {isInCart ? "Go to Cart" : "Add to Cart"}
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
->>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
-          </div>
-        </div>
-      </div>
+        ))
+      )}
     </div>
   );
 }
 
-<<<<<<< HEAD
-export default Cart;
-=======
-export default ProductListing;
->>>>>>> d02ac3718a13d42090c668c68da962a12ae1c23b
+export default OrderHistory;

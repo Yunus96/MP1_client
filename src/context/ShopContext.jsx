@@ -9,7 +9,7 @@ export function ShopProvider({ children }) {
   const [loadingCart, setLoadingCart] = useState(true);
   const [loadingWishlist, setLoadingWishlist] = useState(true);
 
-  const USER_ID = "user123"; // later from auth
+  const USER_ID = "6989a792d8e13444f432bacd"; // later from auth
   const USER_EMAIL = "user123@gmail.com"; // later from auth
 
   /* -------------------- CART -------------------- */
@@ -50,7 +50,7 @@ export function ShopProvider({ children }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          user: USER_ID,
+          userId: USER_ID,
           productId,
         }),
       });

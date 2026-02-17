@@ -31,7 +31,6 @@ function App() {
           <Route path="/category/:categoryname" element={<ProductListPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-
         </Routes>
       </BrowserRouter>
     </ShopProvider>
