@@ -56,7 +56,7 @@ function ProductListing({ searchQuery }) {
     fetchProducts();
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
       if (categoryname && categories.length > 0) {
         const matchedCategory = categories.find(
           (cat) =>
@@ -85,14 +85,14 @@ function ProductListing({ searchQuery }) {
     );
   }
 
-      const handleCategoryChange = (categoryId) => {
+  const handleCategoryChange = (categoryId) => {
         setSelectedCategories(
           (prev) =>
             prev.includes(categoryId)
               ? prev.filter((id) => id !== categoryId) // uncheck
               : [...prev, categoryId] // check
         );
-      };
+  };
 
 const filteredProducts = products
   .filter((item) => {

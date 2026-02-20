@@ -1,4 +1,4 @@
-import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function ProductCard({
   item,
@@ -7,21 +7,27 @@ function ProductCard({
   addToCart,
   toggleWishlist,
 }) {
+  const navigate = useNavigate();
+
   return (
-    <div className="product-card">
+    <div
+      className="product-card"
+      style={{ cursor: "pointer" }}
+      onClick={() => navigate(`/products/${item._id}`)}
+    >
       <div className="image-wrapper">
         <span
           className={`wishlist ${isWishlisted ? "active" : ""}`}
-          onClick={() => toggleWishlist(item)}
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleWishlist(item);
+          }}
         >
           ♥
         </span>
 
         <img
-          src={
-            item.images?.[0] ||
-            "https://via.placeholder.com/300x200"
-          }
+          src={item.images?.[0] || "https://via.placeholder.com/300x200"}
           alt={item.name}
         />
       </div>
@@ -36,7 +42,8 @@ function ProductCard({
         className={`btn w-100 ${
           isInCart ? "btn-primary" : "btn-secondary"
         }`}
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           if (!isInCart) {
             addToCart(item._id);
           }

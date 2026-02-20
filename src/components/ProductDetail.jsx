@@ -1,132 +1,184 @@
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useShop } from "../context/ShopContext";
+import { toast } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function ProductDetail() {
+  const { productId } = useParams();
+  const { addToCart, toggleWishlist, cartItems, wishlistItems } = useShop();
+
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState("M");
+
+  const isInCart = cartItems.some(
+    (item) => item.productId === productId
+  );
+
+  const isWishlisted = wishlistItems.some(
+    (item) => item.productId === productId
+  );
+
+  // 🔥 Fetch selected product
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(
+          `https://mp-1-server.vercel.app/api/products/${productId}`
+        );
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch product");
+        }
+
+        const json = await res.json();
+        setProduct(json.data.product);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [productId]);
+
+  if (loading)
+    return (
+      <div className="text-center mt-5">
+        <h5>Loading product...</h5>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="text-center mt-5 text-danger">
+        <h5>{error}</h5>
+      </div>
+    );
+
+  if (!product) return null;
+
+  const discountPercent = 50;
+  const oldPrice = Math.floor(product.price * 2);
+
   return (
     <div className="container my-4">
       <div className="row">
-        {/* LEFT IMAGE */}
+        {/* LEFT */}
         <div className="col-md-4">
-          <div className="product-image-box position-relative">
-            <span className="wishlist-icon">♡</span>
+          <div className="product-image-container">
+            <span
+              className={`wishlist-icon ${
+                isWishlisted ? "active" : ""
+              }`}
+              onClick={() => toggleWishlist(product)}
+            >
+              ♥
+            </span>
+
             <img
-              src="https://pngimg.com/uploads/jacket/jacket_PNG8058.png"
-              alt="product"
+              src={product.images?.[0]}
+              alt={product.name}
               className="img-fluid"
             />
           </div>
 
-          <button className="btn btn-primary w-100 mt-3">Buy Now</button>
-          <button className="btn btn-secondary w-100 mt-2">
-            Add to Cart
+          <button className="btn buy-btn w-100 mt-3">
+            Buy Now
+          </button>
+
+          <button
+            className="btn cart-btn w-100 mt-2"
+            disabled={isInCart}
+            onClick={() => {
+              addToCart(product._id);
+              toast.success("Added to cart");
+            }}
+          >
+            {isInCart ? "Already in Cart" : "Add to Cart"}
           </button>
         </div>
 
-        {/* RIGHT DETAILS */}
+        {/* RIGHT */}
         <div className="col-md-8">
-          <h5>
-            Men Premium Jacket Quilted Hooded Winter Jackets for Men & Boys Full
-            Sleeve
-          </h5>
+          <h5>{product.name}</h5>
 
-          {/* Rating */}
-          <div className="rating mb-2">
-            ⭐⭐⭐⭐☆
-            <span className="rating-text ms-2">4.5</span>
+          <div className="rating-section">
+            <span>{product.rating}</span>
+            <span>⭐⭐⭐⭐☆</span>
           </div>
 
-          {/* Price */}
-          <div className="price-section mb-3">
-            <span className="price">₹2000</span>
-            <span className="old-price ms-2">₹3999</span>
-            <span className="discount ms-2">50% off</span>
+          <div className="price-section">
+            <span className="current-price">
+              ₹{product.price}
+            </span>
+            <span className="old-price">
+              ₹{oldPrice}
+            </span>
+          </div>
+
+          <div className="discount">
+            {discountPercent}% off
           </div>
 
           {/* Quantity */}
-          <div className="mb-3">
+          <div className="mt-3">
             <strong>Quantity:</strong>
-            <button className="qty-btn ms-2">-</button>
-            <span className="qty-number">1</span>
-            <button className="qty-btn">+</button>
+            <button
+              className="qty-btn"
+              onClick={() =>
+                setQuantity((prev) =>
+                  prev > 1 ? prev - 1 : 1
+                )
+              }
+            >
+              -
+            </button>
+            <span className="qty-number">{quantity}</span>
+            <button
+              className="qty-btn"
+              onClick={() =>
+                setQuantity((prev) => prev + 1)
+              }
+            >
+              +
+            </button>
           </div>
 
           {/* Size */}
-          <div className="mb-4">
+          <div className="mt-3">
             <strong>Size:</strong>
-            <div className="d-inline-block ms-3">
-              <button className="size-btn">S</button>
-              <button className="size-btn active">M</button>
-              <button className="size-btn">XL</button>
-              <button className="size-btn">XXL</button>
+            <div className="size-container">
+              {["S", "M", "XL", "XXL"].map((size) => (
+                <button
+                  key={size}
+                  className={`size-btn ${
+                    selectedSize === size
+                      ? "active-size"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    setSelectedSize(size)
+                  }
+                >
+                  {size}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Delivery Icons */}
-          <div className="delivery-box mb-4">
-            <div>
-              <span>📦</span>
-              <p>10 days Replacement</p>
-            </div>
-            <div>
-              <span>🚚</span>
-              <p>Free Delivery</p>
-            </div>
-            <div>
-              <span>🚀</span>
-              <p>Express Delivery</p>
-            </div>
-            <div>
-              <span>🔒</span>
-              <p>Secure Payment</p>
-            </div>
-          </div>
+          <hr />
 
           {/* Description */}
           <div className="description">
             <h6>Description:</h6>
-            <ul>
-              <li>
-                STYLISH & FUNCTIONAL: Modern quilted design combining timeless
-                style with modern flair.
-              </li>
-              <li>
-                ALL-WEATHER READY: Designed to keep you warm and comfortable.
-              </li>
-              <li>
-                UNPARALLELED COMFORT: Soft lining ensures long-lasting wear.
-              </li>
-              <li>
-                VERSATILE DESIGN: Perfect for casual outings to semi-formal
-                events.
-              </li>
-              <li>
-                TRAVEL FRIENDLY: Lightweight and easy to pack.
-              </li>
-            </ul>
+            <p>{product.description}</p>
           </div>
-        </div>
-      </div>
-
-      {/* SIMILAR PRODUCTS */}
-      <div className="mt-5">
-        <h6 className="mb-3">More items you may like in apparel</h6>
-
-        <div className="row g-4">
-          {[1, 2, 3, 4].map((_, index) => (
-            <div className="col-md-3" key={index}>
-              <div className="similar-card">
-                <span className="wishlist-icon small">♡</span>
-                <img
-                  src="https://pngimg.com/uploads/jacket/jacket_PNG8058.png"
-                  alt="product"
-                />
-                <p className="mt-2 mb-1">Men Premium Jacket</p>
-                <strong>₹2000</strong>
-                <button className="btn btn-secondary w-100 mt-2">
-                  Add to Cart
-                </button>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </div>

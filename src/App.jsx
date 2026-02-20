@@ -29,7 +29,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductListPage searchQuery={searchQuery} />} />
-          <Route path="/products/detail" element={<ProductDetailPage />} />
+          <Route path="/products/:productId" element={<ProductDetailPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/category/:categoryname" element={<ProductListPage />} />
