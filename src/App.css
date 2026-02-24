@@ -273,16 +273,20 @@
 }
 
 .image-wrapper {
-  background: #eee;
-  height: 260px;
+  background: #f5f5f5;
+  aspect-ratio: 1 / 1;   /* Makes perfect square */
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
 }
 
 .image-wrapper img {
-  max-height: 220px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .wishlist {
