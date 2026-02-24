@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useShop } from "../context/ShopContext";
 
 export default function Nav({ setSearchQuery }) {
+  const { cartItems, wishlistItems } = useShop();
   return (
     <header className="nav-wrapper">
       <nav className="nav">
@@ -26,11 +28,11 @@ export default function Nav({ setSearchQuery }) {
           </Link>
 
           <Link to="/wishlist" className="icon-wrapper">
-            ❤️ <span className="badge">0</span>
+            ❤️ <span className="badge">{wishlistItems.length}</span>
           </Link>
 
           <Link to="/cart" className="icon-wrapper cart">
-            🛒 <span className="badge">0</span>
+            🛒 <span className="badge">{cartItems.length}</span>
             <span className="cart-text">Cart</span>
           </Link>
         </div>
