@@ -10,6 +10,7 @@ function AddressManager({ selectedAddress, setSelectedAddress }) {
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [editAddressId, setEditAddressId] = useState(null);
+  const [loadingAddresses, setLoadingAddresses] = useState(true);
 
 
   const fetchAddresses = async () => {
@@ -17,9 +18,7 @@ function AddressManager({ selectedAddress, setSelectedAddress }) {
       const res = await fetch(
         `${API_BASE_URL}/address/${userId}`
       );
-  
-      if (!res.ok) throw new Error();
-  
+        
       const response = await res.json();
   
       const addressArray = response?.data?.addresses || [];
@@ -35,12 +34,20 @@ function AddressManager({ selectedAddress, setSelectedAddress }) {
       }
   
     } catch {
-      toast.error("Failed to load addresses");
+      console.error("Failed to load addresses");
     }
   };
+
   
   
   useEffect(() => {
+    const load = async () => {
+        setLoadingAddresses(true);
+      await fetchAddresses();
+        setLoadingAddresses(false);
+    };
+
+    load();
     fetchAddresses();
   }, []);
 
@@ -102,9 +109,6 @@ function AddressManager({ selectedAddress, setSelectedAddress }) {
         }),
       });
   
-      if (!res.ok) {
-        throw new Error("Failed to save address");
-      }
   
       const response = await res.json();
   
@@ -151,43 +155,50 @@ function AddressManager({ selectedAddress, setSelectedAddress }) {
 
   /* ---------------- DELETE ---------------- */
 
-  const handleDelete = async (addressId) => {
-    try {
-      const res = await fetch(
-        `${API_BASE_URL}/address/${addressId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user: USER_EMAIL,
-          }),
-        }
-      );
-  
-      if (!res.ok) {
-        throw new Error("Failed to delete address");
+const handleDelete = async (addressId) => {
+  // Save previous state (for rollback)
+  const previousAddresses = [...addresses];
+
+  // Optimistic UI update
+  const updatedAddresses = addresses.filter(
+    (address) => address._id !== addressId
+  );
+
+  setAddresses(updatedAddresses);
+
+  // If deleted address was selected → clear selection
+  if (selectedAddress === addressId) {
+    setSelectedAddress(null);
+  }
+
+  try {
+    const res = await fetch(
+      `${API_BASE_URL}/address/${addressId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId,
+        }),
       }
-  
-      const response = await res.json();
-  
-      const updatedAddresses =
-        response?.data?.addresses || [];
-  
-      setAddresses(updatedAddresses);
-  
-      // If deleted address was selected → clear selection
-      if (!updatedAddresses.find(a => a._id === selectedAddress)) {
-        setSelectedAddress(null);
-      }
-  
-      toast.success("Address deleted successfully");
-  
-    } catch (error) {
-      toast.error("Failed to delete address");
+    );
+
+    if (!res.ok) {
+      throw new Error("Delete failed");
     }
-  };
+
+    toast.success("Address deleted successfully");
+  } catch (error) {
+    console.error("Delete failed. Rolling back...", error);
+
+    // Rollback UI if API fails
+    setAddresses(previousAddresses);
+
+    toast.error("Failed to delete address");
+  }
+};
   
     /* ---------------- Edit ---------------- */
 
@@ -208,9 +219,18 @@ function AddressManager({ selectedAddress, setSelectedAddress }) {
   };
   
 
+
   /* ---------------- UI ---------------- */
+    if (loadingAddresses) {
+    return (
+      <div className="text-center mt-4">
+        <p>Loading address...</p>
+      </div>
+    );
+  }
 
   return (
+
     <div>
       <h5>Address Management</h5>
       <p className="text-muted">
