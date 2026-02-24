@@ -21,8 +21,8 @@ export default function Nav({ setSearchQuery }) {
 
         {/* Right */}
         <div className="nav-right">
-          <Link to="/login">
-            <button className="login-btn">Login</button>
+          <Link to="/profile">
+            <button className="login-btn">Profile</button>
           </Link>
 
           <Link to="/wishlist" className="icon-wrapper">

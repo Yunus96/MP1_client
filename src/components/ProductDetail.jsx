@@ -23,6 +23,30 @@ function ProductDetail() {
     (item) => item.productId === productId
   );
 
+  // Fetch selected product
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(
+          `https://mp-1-server.vercel.app/api/products/${productId}`
+        );
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch product");
+        }
+
+        const json = await res.json();
+        setProduct(json.data.product);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [productId]);
+
   // 🔥 Fetch selected product
   useEffect(() => {
     const fetchProduct = async () => {
@@ -47,29 +71,13 @@ function ProductDetail() {
     fetchProduct();
   }, [productId]);
 
-  if (loading)
-    return (
-      <div className="text-center mt-5">
-        <h5>Loading product...</h5>
-      </div>
-    );
-
-  if (error)
-    return (
-      <div className="text-center mt-5 text-danger">
-        <h5>{error}</h5>
-      </div>
-    );
-
-  if (!product) return null;
-
   const discountPercent = 50;
-  const oldPrice = Math.floor(product.price * 2);
+  const oldPrice = Math.floor(product?.price * 2);
 
   return (
-    <div className="container my-4">
+    <div className="container my-4 product-detail-wrapper">
       <div className="row">
-        {/* LEFT */}
+        {/* LEFT SECTION */}
         <div className="col-md-4">
           <div className="product-image-container">
             <span
@@ -77,26 +85,20 @@ function ProductDetail() {
                 isWishlisted ? "active" : ""
               }`}
               onClick={() => toggleWishlist(product)}
-            >
-              ♥
-            </span>
-
+            > ♥ </span>
             <img
-              src={product.images?.[0]}
-              alt={product.name}
+              src={product?.images?.[0]}
+              alt={product?.name}
               className="img-fluid"
             />
           </div>
 
-          <button className="btn buy-btn w-100 mt-3">
-            Buy Now
-          </button>
-
+          <button className="btn buy-btn w-100 mt-3">Buy Now</button>
           <button
             className="btn cart-btn w-100 mt-2"
             disabled={isInCart}
             onClick={() => {
-              addToCart(product._id);
+              addToCart(product?._id);
               toast.success("Added to cart");
             }}
           >
@@ -104,27 +106,24 @@ function ProductDetail() {
           </button>
         </div>
 
-        {/* RIGHT */}
+        {/* RIGHT SECTION */}
         <div className="col-md-8">
-          <h5>{product.name}</h5>
+          <h5 className="product-title">
+            {product?.name}
+          </h5>
 
+          {/* Rating */}
           <div className="rating-section">
-            <span>{product.rating}</span>
-            <span>⭐⭐⭐⭐☆</span>
+            <span className="rating-number">{product?.rating}</span>
+            <span className="stars">⭐⭐⭐⭐☆</span>
           </div>
 
+          {/* Price */}
           <div className="price-section">
-            <span className="current-price">
-              ₹{product.price}
-            </span>
-            <span className="old-price">
-              ₹{oldPrice}
-            </span>
+            <span className="current-price">₹{product?.price}</span>
+            <span className="old-price">₹{oldPrice}</span>
           </div>
-
-          <div className="discount">
-            {discountPercent}% off
-          </div>
+          <div className="discount">{discountPercent}% off</div>
 
           {/* Quantity */}
           <div className="mt-3">
@@ -158,13 +157,9 @@ function ProductDetail() {
                 <button
                   key={size}
                   className={`size-btn ${
-                    selectedSize === size
-                      ? "active-size"
-                      : ""
+                    selectedSize === size ? "active-size" : ""
                   }`}
-                  onClick={() =>
-                    setSelectedSize(size)
-                  }
+                  onClick={() => setSelectedSize(size)}
                 >
                   {size}
                 </button>
@@ -174,11 +169,72 @@ function ProductDetail() {
 
           <hr />
 
+          {/* Delivery Icons */}
+          <div className="delivery-row">
+            <div className="delivery-item">
+              <span>📦</span>
+              <p>10 days<br />Returns</p>
+            </div>
+            <div className="delivery-item">
+              <span>💵</span>
+              <p>Pay on<br />Delivery</p>
+            </div>
+            <div className="delivery-item">
+              <span>🚚</span>
+              <p>Free<br />Delivery</p>
+            </div>
+            <div className="delivery-item">
+              <span>🔒</span>
+              <p>Secure<br />Payment</p>
+            </div>
+          </div>
+
+          <hr />
+
           {/* Description */}
           <div className="description">
             <h6>Description:</h6>
-            <p>{product.description}</p>
+            <ul>
+              <li>
+                {product?.description}
+              </li>
+              <li>
+                ALL-WEATHER READY: Stay comfortable in any weather.
+              </li>
+              <li>
+                UNPARALLELED COMFORT: Enjoy a snug, non-restrictive fit.
+              </li>
+              <li>
+                VERSATILE ESSENTIAL: Perfect for casual outings.
+              </li>
+              <li>
+                TRAVEL-FRIENDLY: Lightweight and easy to pack.
+              </li>
+            </ul>
           </div>
+        </div>
+      </div>
+
+      {/* SIMILAR PRODUCTS */}
+      <div className="mt-5">
+        <h6>More items you may like in apparel</h6>
+        <div className="row g-4 mt-2">
+          {[1, 2, 3, 4].map((_, index) => (
+            <div className="col-md-3" key={index}>
+              <div className="similar-card">
+                <span className="wishlist-icon small">♡</span>
+                <img
+                  src="https://pngimg.com/uploads/jacket/jacket_PNG8058.png"
+                  alt="product"
+                />
+                <p className="mt-2">Men Premium Jacket</p>
+                <strong>₹2000</strong>
+                <button className="btn cart-btn w-100 mt-2">
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
