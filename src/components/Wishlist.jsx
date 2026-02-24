@@ -2,10 +2,11 @@ import { useShop } from "../context/ShopContext";
 import { API_BASE_URL } from "../config/api";
 
 function Wishlist() {
-  const { wishlistItems, loadingWishlist, setWishlistItems, toggleWishlist, addToCart } =
+  const { wishlistItems, loadingWishlist, setWishlistItems, toggleWishlist, addToCart, cartItems, setCartItems } =
     useShop();
 
   let USER_EMAIL="user123@gmail.com"
+  let USER_ID="6989a792d8e13444f432bacd"
 
   if (loadingWishlist) {
     return (
@@ -57,6 +58,67 @@ function Wishlist() {
       }
     };
 
+  const moveToCart = async (product) => {
+    const previousWishlist = [...wishlistItems];
+    const previousCart = [...cartItems];
+
+    //  Optimistic update
+    setWishlistItems((prev) =>
+      prev.filter((item) => item._id !== product._id)
+    );
+
+    setCartItems((prev) => [
+      ...prev,
+      {
+        _id: product._id,
+        productId: product._id,
+        quantity: 1,
+      },
+    ]);
+
+    try {
+      // 1️ Add to cart
+      const cartRes = await fetch(
+        `${API_BASE_URL}/cart`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: USER_ID,
+            productId: product._id,
+          }),
+        }
+      );
+
+      if (!cartRes.ok) {
+        throw new Error("Failed to add to cart");
+      }
+
+      // 2️ Remove from wishlist
+      const wishlistRes = await fetch(
+        `${API_BASE_URL}/wishlist`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user: USER_EMAIL,
+            productId: product._id,
+          }),
+        }
+      );
+
+      if (!wishlistRes.ok) {
+        throw new Error("Failed to remove from wishlist");
+      }
+    } catch (error) {
+      console.error("Move to cart failed. Rolling back...", error);
+
+      // Rollback both
+      setWishlistItems(previousWishlist);
+      setCartItems(previousCart);
+    }
+  };
+
   return (
     <div className="container my-5">
       <h4 className="text-center mb-4">My Wishlist</h4>
@@ -98,7 +160,7 @@ function Wishlist() {
 
                 <button
                   className="btn btn-secondary w-50"
-                  onClick={() => addToCart(item._id)}
+                  onClick={() => moveToCart(item)}
                 >
                   Move to Cart
                 </button>
