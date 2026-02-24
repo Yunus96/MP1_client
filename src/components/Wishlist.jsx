@@ -1,9 +1,11 @@
-import React from "react";
 import { useShop } from "../context/ShopContext";
+import { API_BASE_URL } from "../config/api";
 
 function Wishlist() {
-  const { wishlistItems, loadingWishlist, toggleWishlist, addToCart } =
+  const { wishlistItems, loadingWishlist, setWishlistItems, toggleWishlist, addToCart } =
     useShop();
+
+  let USER_EMAIL="user123@gmail.com"
 
   if (loadingWishlist) {
     return (
@@ -21,6 +23,39 @@ function Wishlist() {
       </div>
     );
   }
+
+  const removeFromWishlist = async (productId) => {
+      // Save previous state for rollback
+      const previousWishlist = [...wishlistItems];
+
+      // 🔥 Optimistic update
+      setWishlistItems((prev) =>
+        prev.filter((item) => item._id !== productId)
+      );
+
+      try {
+        const res = await fetch(
+          `${API_BASE_URL}/wishlist`,
+          {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              user: USER_EMAIL,
+              productId,
+            }),
+          }
+        );
+
+        if (!res.ok) {
+          throw new Error("Failed to remove from wishlist");
+        }
+      } catch (error) {
+        console.error("Wishlist remove failed. Rolling back...", error);
+
+        // 🔁 Rollback
+        setWishlistItems(previousWishlist);
+      }
+    };
 
   return (
     <div className="container my-5">
@@ -56,7 +91,7 @@ function Wishlist() {
               <div className="d-flex gap-2 mt-2">
                 <button
                   className="btn btn-outline-danger w-50"
-                  onClick={() => toggleWishlist(item)}
+                  onClick={() => removeFromWishlist(item._id)}
                 >
                   Remove
                 </button>
