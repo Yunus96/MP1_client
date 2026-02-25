@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function ProductCard({
@@ -8,6 +9,41 @@ function ProductCard({
   toggleWishlist,
 }) {
   const navigate = useNavigate();
+  const [optimisticWishlisted, setOptimisticWishlisted] = useState(isWishlisted);
+   const [optimisticInCart, setOptimisticInCart] = useState(isInCart);
+
+  const handleWishlistClick = async (e) => {
+    e.stopPropagation();
+
+    // Optimistic update
+    setOptimisticWishlisted((prev) => !prev);
+
+    try {
+      await toggleWishlist(item);
+    } catch (err) {
+      // Rollback on failure
+      setOptimisticWishlisted((prev) => !prev);
+    }
+  };
+
+  const handleCartClick = async (e) => {
+    e.stopPropagation();
+
+    if (optimisticInCart) {
+      navigate("/cart");
+      return;
+    }
+
+    // Optimistic update
+    setOptimisticInCart(true);
+
+    try {
+      await addToCart(item._id);
+    } catch (err) {
+      // Rollback on failure
+      setOptimisticInCart(false);
+    }
+  };
 
   return (
     <div
@@ -17,11 +53,8 @@ function ProductCard({
     >
       <div className="image-wrapper">
         <span
-          className={`wishlist ${isWishlisted ? "active" : ""}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleWishlist(item);
-          }}
+          className={`wishlist ${optimisticWishlisted ? "active" : ""}`}
+          onClick={handleWishlistClick}
         >
           ♥
         </span>
@@ -38,18 +71,11 @@ function ProductCard({
         <h6 className="fw-bold">₹{item.price}</h6>
       </div>
 
-      <button
-        className={`btn w-100 ${
-          isInCart ? "btn-primary" : "btn-secondary"
-        }`}
-        onClick={(e) => {
-          e.stopPropagation();
-          if (!isInCart) {
-            addToCart(item._id);
-          }
-        }}
+     <button
+        className={`btn w-100 ${optimisticInCart ? "btn-primary" : "btn-secondary"}`}
+        onClick={handleCartClick}
       >
-        {isInCart ? "Go to Cart" : "Add to Cart"}
+        {optimisticInCart ? "Go to Cart" : "Add to Cart"}
       </button>
     </div>
   );
