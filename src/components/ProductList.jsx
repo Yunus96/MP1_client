@@ -104,7 +104,7 @@ const filteredProducts = products
 
     const matchesCategory =
       selectedCategories.length === 0 ||
-      selectedCategories.includes(item.category);
+      selectedCategories.includes(item.category?._id || item.category);
 
     const matchesRating =
       selectedRating === null || item.rating >= selectedRating;

@@ -26,10 +26,8 @@ function Wishlist() {
   }
 
   const removeFromWishlist = async (productId) => {
-      // Save previous state for rollback
       const previousWishlist = [...wishlistItems];
 
-      // 🔥 Optimistic update
       setWishlistItems((prev) =>
         prev.filter((item) => item._id !== productId)
       );
@@ -52,8 +50,6 @@ function Wishlist() {
         }
       } catch (error) {
         console.error("Wishlist remove failed. Rolling back...", error);
-
-        // 🔁 Rollback
         setWishlistItems(previousWishlist);
       }
     };
@@ -62,7 +58,6 @@ function Wishlist() {
     const previousWishlist = [...wishlistItems];
     const previousCart = [...cartItems];
 
-    //  Optimistic update
     setWishlistItems((prev) =>
       prev.filter((item) => item._id !== product._id)
     );
@@ -77,7 +72,6 @@ function Wishlist() {
     ]);
 
     try {
-      // 1️ Add to cart
       const cartRes = await fetch(
         `${API_BASE_URL}/cart`,
         {
@@ -94,7 +88,6 @@ function Wishlist() {
         throw new Error("Failed to add to cart");
       }
 
-      // 2️ Remove from wishlist
       const wishlistRes = await fetch(
         `${API_BASE_URL}/wishlist`,
         {
@@ -112,8 +105,6 @@ function Wishlist() {
       }
     } catch (error) {
       console.error("Move to cart failed. Rolling back...", error);
-
-      // Rollback both
       setWishlistItems(previousWishlist);
       setCartItems(previousCart);
     }
@@ -125,29 +116,30 @@ function Wishlist() {
 
       <div className="row justify-content-start">
         {wishlistItems.map((item) => (
-          <div className="ol-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={item._id}>
-            <div className="wishlist-card">
-              <div className="wishlist-image">
+          <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={item._id}>
+            <div className="product-card">
+              <div className="image-wrapper">
                 <span
-                  className="wishlist-heart"
+                  className="wishlist active"
                   onClick={() => toggleWishlist(item)}
                   style={{ cursor: "pointer" }}
                 >
-                  ❤
+                  ♥
                 </span>
 
                 <img
                   src={
                     item.images?.[0] ||
-                    "https://pngimg.com/uploads/jacket/jacket_PNG8058.png"
+                    "https://via.placeholder.com/300x200"
                   }
                   alt={item.name}
                 />
               </div>
 
-              <div className="wishlist-info text-center">
-                <p className="mb-1">{item.name}</p>
-                <strong>₹{item.price}</strong>
+              <div className="text-center mt-3">
+                <p className="product-name mb-1">{item.name}</p>
+                <small className="text-muted">⭐ {item.rating}</small>
+                <h6 className="fw-bold">₹{item.price}</h6>
               </div>
 
               <div className="d-flex gap-2 mt-2">
