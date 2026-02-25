@@ -229,19 +229,15 @@ const filteredProducts = products
           <div className="row g-4">
             {filteredProducts.map((item, index) => {
               const isInCart = cartItems.some((c) => c.productId === item._id);
-              const isWishlisted = wishlistItems.some(
-                (w) => w.productId === item._id
-              );
+              const isWishlisted = wishlistItems.some((w) => {
+                return w._id === item._id;
+              });
               return (
                 <div className="col-md-3" key={item._id}>
                   <ProductCard
                     item={item}
-                    isInCart={cartItems.some(
-                      (c) => c.productId === item._id
-                    )}
-                    isWishlisted={wishlistItems.some(
-                      (w) => w.productId === item._id
-                    )}
+                    isInCart={isInCart}
+                    isWishlisted={isWishlisted}
                     addToCart={addToCart}
                     toggleWishlist={toggleWishlist}
                   />

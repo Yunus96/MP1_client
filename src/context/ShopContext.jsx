@@ -25,15 +25,18 @@ export function ShopProvider({ children }) {
         if (!res.ok) throw new Error("Failed to fetch cart");
 
         const data = await res.json();
-
+        //console.log(data)
         // Normalize cart items
-        const normalized = (data.data.items || []).map((item) => ({
+        const normalized = (data.data.items || []).map((item) => (
+          //console.log(item),
+          {
           _id: item._id,
-          productId: item.product,
+          productId: item.product._id,
           quantity: item.quantity,
         }));
-
+        //console.log(normalized)
         setCartItems(normalized);
+        
       } catch (err) {
         console.error("Cart fetch error:", err);
       } finally {
@@ -150,6 +153,7 @@ export function ShopProvider({ children }) {
       {children}
     </ShopContext.Provider>
   );
+  console.log(cartItems)
 }
 
 export const useShop = () => useContext(ShopContext);
