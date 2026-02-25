@@ -168,10 +168,12 @@ function Cart() {
       <div className="row justify-content-center">
         {/* LEFT: CART ITEMS */}
         <div className="col-md-7">
+          
           {cartItems.map((item) => (
             <div className="cart-item d-flex mb-4" key={item._id}>
               <div className="cart-image">
-                <img src={item.productId.images[0]} alt={item.productId.name} />
+                {console.log(item.productId.images)}
+                <img src={item.productId.images} alt={item.productId.name} />
               </div>
 
               <div className="cart-details ms-4">

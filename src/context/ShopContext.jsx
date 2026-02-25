@@ -31,7 +31,7 @@ export function ShopProvider({ children }) {
           //console.log(item),
           {
           _id: item._id,
-          productId: item.product._id,
+          productId: item.product,
           quantity: item.quantity,
         }));
         //console.log(normalized)
