@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ShopProvider } from "./context/ShopContext";
+import Footer from "./components/Footer";
 
 import "./App.css";
 
@@ -36,6 +37,7 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </ShopProvider>
   );
