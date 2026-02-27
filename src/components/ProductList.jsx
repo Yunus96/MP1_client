@@ -132,6 +132,7 @@ const filteredProducts = products
 
   return (
     <div className="container-fluid mt-4">
+      
       <div className="row">
         {/* FILTERS */}
         <div className="col-md-3 filter-section px-4">
