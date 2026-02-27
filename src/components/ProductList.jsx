@@ -182,7 +182,7 @@ const filteredProducts = products
           ))}
           {/* Rating */}
           <h6>Rating</h6>
-          {[5, 4, 3, 2, 1].map((r) => (
+          {[4, 3, 2, 1].map((r) => (
             <div className="form-check" key={r}>
               <input
                 className="form-check-input"
