@@ -47,7 +47,14 @@ export function ShopProvider({ children }) {
     fetchCart();
   }, []);
 
-  const addToCart = async (productId) => {
+const addToCart = async (productId) => {
+    // Optimistic update — add a placeholder so badge count increases instantly
+    const previousCart = [...cartItems];
+    setCartItems((prev) => [
+      ...prev,
+      { _id: `temp_${productId}`, productId: { _id: productId }, quantity: 1 },
+    ]);
+
     try {
       const res = await fetch("https://mp-1-server.vercel.app/api/cart", {
         method: "POST",
@@ -60,9 +67,13 @@ export function ShopProvider({ children }) {
 
       if (!res.ok) throw new Error("Add to cart failed");
 
-      const data = await res.json();
+      // Re-fetch cart to get fully populated product objects
+      const cartRes = await fetch(
+        `https://mp-1-server.vercel.app/api/cart/${USER_ID}`
+      );
+      const cartData = await cartRes.json();
 
-      const normalized = data.data.cart.items.map((item) => ({
+      const normalized = (cartData.data.items || []).map((item) => ({
         _id: item._id,
         productId: item.product,
         quantity: item.quantity,
@@ -71,6 +82,8 @@ export function ShopProvider({ children }) {
       setCartItems(normalized);
     } catch (err) {
       console.error("Add to cart error:", err);
+      // Rollback on failure
+      setCartItems(previousCart);
     }
   };
 
@@ -100,15 +113,32 @@ export function ShopProvider({ children }) {
     fetchWishlist();
   }, []);
 
-  const toggleWishlist = async (product) => {
-    const isWishlisted = wishlistItems.some((w) => w._id === product._id);
+ const toggleWishlist = async (product) => {
+    const isWishlisted = wishlistItems.some(
+      (w) => w.productId === product._id || w._id === product._id
+    );
+
+    // Save previous state for rollback
+    const previousWishlist = [...wishlistItems];
+
+    // Optimistic update — immediately update count in Nav
+    if (isWishlisted) {
+      setWishlistItems((prev) =>
+        prev.filter((w) => w.productId !== product._id && w._id !== product._id)
+      );
+    } else {
+      setWishlistItems((prev) => [
+        ...prev,
+        { ...product, _id: product._id, productId: product._id },
+      ]);
+    }
 
     try {
       const res = await fetch("https://mp-1-server.vercel.app/api/wishlist", {
         method: isWishlisted ? "DELETE" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          user: "user123@gmail.com",
+          user: USER_EMAIL,
           productId: product._id,
         }),
       });
@@ -119,18 +149,18 @@ export function ShopProvider({ children }) {
 
       const data = await res.json();
 
-      //Normalize wishlist items
-      const normalizedWishlist = (data.data.wishlist || []).map((item) => ({
-        productId: typeof item === "string" ? item : item._id,
+      // Sync with server response
+      const normalized = (data.data.wishlist || []).map((item) => ({
+        ...item,
+        _id: item._id,
+        productId: item._id,
       }));
-      // Backend returns updated wishlist
-      setWishlistItems(
-        (data.data.wishlist || []).map((item) => ({
-          productId: item._id,
-        }))
-      );
+
+      setWishlistItems(normalized);
     } catch (err) {
       console.error("Wishlist toggle error:", err);
+      // Rollback on failure
+      setWishlistItems(previousWishlist);
     }
   };
 
