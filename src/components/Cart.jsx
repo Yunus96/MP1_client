@@ -6,9 +6,10 @@ import { useShop } from "../context/ShopContext";
 import { API_BASE_URL } from "../config/api";
 
 function Cart() {
-  const { cartItems, setCartItems, loadingCart } = useShop();
+  const { cartItems, setCartItems, loadingCart, wishlistItems, setWishlistItems } = useShop();
 
-  const USER_ID = "user123";
+  const USER_ID = "6989a792d8e13444f432bacd";
+  const USER_EMAIL = "user123@gmail.com";
   const navigate = useNavigate();
 
   if (loadingCart) {
@@ -88,7 +89,7 @@ function Cart() {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          user: USER_ID,
+          userId: USER_ID,
           productId,
         }),
       });
@@ -103,21 +104,32 @@ function Cart() {
   };
 
   /* ---------------- move to wishlist ---------------- */
-  const handleMoveToWishlist = async (productId) => {
+const handleMoveToWishlist = async (productId) => {
     const previousCart = [...cartItems];
+    const previousWishlist = [...wishlistItems];
 
-    // Optimistic UI update
+    // Find the full product object from cart
+    const cartItem = cartItems.find((item) => item.productId._id === productId);
+    const product = cartItem?.productId;
+
+    // Optimistic update — remove from cart and add to wishlist immediately
     setCartItems((prev) =>
       prev.filter((item) => item.productId._id !== productId)
     );
 
+    if (product) {
+      setWishlistItems((prev) => [
+        ...prev,
+        { ...product, _id: product._id, productId: product._id },
+      ]);
+    }
+
     try {
-      //  Add to Wishlist
       const wishlistRes = await fetch(`${API_BASE_URL}/wishlist`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          user: "user123@gmail.com",
+          user: USER_EMAIL,
           productId,
         }),
       });
@@ -126,12 +138,11 @@ function Cart() {
         throw new Error("Failed to add to wishlist");
       }
 
-      //  Remove from Cart
       const cartRes = await fetch(`${API_BASE_URL}/cart`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          user: USER_ID,
+          userId: USER_ID,
           productId,
         }),
       });
@@ -143,8 +154,8 @@ function Cart() {
       toast.success("Item moved to wishlist");
     } catch (error) {
       console.error("Move to wishlist failed. Rolling back...", error);
-
       setCartItems(previousCart);
+      setWishlistItems(previousWishlist);
       toast.error("Failed to move item. Please try again.");
     }
   };
@@ -172,8 +183,7 @@ function Cart() {
           {cartItems.map((item) => (
             <div className="cart-item d-flex mb-4" key={item._id}>
               <div className="cart-image">
-                {console.log(item.productId.images)}
-                <img src={item.productId.images} alt={item.productId.name} />
+                <img src={item.productId.images?.[0]} alt={item.productId.name} />
               </div>
 
               <div className="cart-details ms-4">

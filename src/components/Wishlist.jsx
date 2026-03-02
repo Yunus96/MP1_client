@@ -33,7 +33,6 @@ function Wishlist() {
       );
 
       try {
-        console.log(`${API_BASE_URL}`)
         const res = await fetch(
           `${API_BASE_URL}/wishlist`,
           {
@@ -67,7 +66,7 @@ function Wishlist() {
       ...prev,
       {
         _id: product._id,
-        productId: product._id,
+        productId: product,
         quantity: 1,
       },
     ]);
