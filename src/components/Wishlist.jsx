@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useShop } from "../context/ShopContext";
 import { API_BASE_URL } from "../config/api";
 
@@ -5,10 +6,38 @@ function Wishlist() {
   const { wishlistItems, loadingWishlist, setWishlistItems, toggleWishlist, addToCart, cartItems, setCartItems } =
     useShop();
 
+  const [loading, setLoading] = useState(true);
+
   let USER_EMAIL="user123@gmail.com"
   let USER_ID="6989a792d8e13444f432bacd"
 
-  if (loadingWishlist) {
+   // Re-fetch wishlist every time this page mounts
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`${API_BASE_URL}/wishlist/${USER_EMAIL}`);
+        if (!res.ok) throw new Error("Failed to fetch wishlist");
+        const data = await res.json();
+
+        const normalized = (data.data.wishlist || []).map((item) => ({
+          ...item,
+          _id: item._id,
+          productId: item._id,
+        }));
+
+        setWishlistItems(normalized);
+      } catch (err) {
+        console.error("Wishlist fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWishlist();
+  }, []);
+
+  if (loadingWishlist || loading) {
     return (
       <div className="text-center mt-5">
         <h5>Loading wishlist...</h5>
@@ -116,15 +145,13 @@ function Wishlist() {
 
       <div className="row justify-content-start">
         {wishlistItems.map((item) => (
-          <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={item._id}>
+          
+          <div className="col-12 col-sm-6 col-md-4 col-lg-3 mb-4" key={item._id || item.productId}>
             <div className="product-card">
               <div className="image-wrapper">
-
-
                 <img
                   src={
-                    item.images?.[0] ||
-                    "https://via.placeholder.com/300x200"
+                    item.images?.[0]
                   }
                   alt={item.name}
                 />
