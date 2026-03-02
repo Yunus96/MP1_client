@@ -156,7 +156,7 @@ function ProductDetail() {
           </div>
 
           {/* Size */}
-          <div className="mt-3">
+          {product?.category === "699dc26bd5d8f2048757aa91" && <div className="mt-3">
             <strong>Size:</strong>
             <div className="size-container">
               {["S", "M", "XL", "XXL"].map((size) => (
@@ -171,7 +171,7 @@ function ProductDetail() {
                 </button>
               ))}
             </div>
-          </div>
+          </div>}
 
           <hr />
 
