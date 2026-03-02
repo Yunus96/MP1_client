@@ -303,6 +303,9 @@
 .wishlist.active {
   color: red;
 }
+.wishlist-icon.active {
+  color: red;
+}
 
 .btn-secondary {
   background: #999;

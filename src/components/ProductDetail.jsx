@@ -4,6 +4,8 @@ import { useShop } from "../context/ShopContext";
 import { toast } from "react-toastify";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import { API_BASE_URL } from "../config/api";
+
 function ProductDetail() {
   const { productId } = useParams();
   const { addToCart, toggleWishlist, cartItems, wishlistItems } = useShop();
@@ -20,15 +22,14 @@ function ProductDetail() {
   );
 
   const isWishlisted = wishlistItems.some(
-    (item) => item.productId === productId
+    (item) =>  item._id === productId
   );
-
   // Fetch selected product
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const res = await fetch(
-          `https://mp-1-server.vercel.app/api/products/${productId}`
+          `${API_BASE_URL}/products/${productId}`
         );
 
         if (!res.ok) {
@@ -47,12 +48,12 @@ function ProductDetail() {
     fetchProduct();
   }, [productId]);
 
-  // 🔥 Fetch selected product
+  //  Fetch selected product
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const res = await fetch(
-          `https://mp-1-server.vercel.app/api/products/${productId}`
+          `${API_BASE_URL}/products/${productId}`
         );
 
         if (!res.ok) {
@@ -81,7 +82,7 @@ function ProductDetail() {
         <div className="col-md-4">
           <div className="product-image-container">
             <span
-              className={`wishlist-icon ${
+              className={`wishlist ${
                 isWishlisted ? "active" : ""
               }`}
               onClick={() => toggleWishlist(product)}
