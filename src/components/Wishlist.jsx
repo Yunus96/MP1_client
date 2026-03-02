@@ -33,6 +33,7 @@ function Wishlist() {
       );
 
       try {
+        console.log(`${API_BASE_URL}`)
         const res = await fetch(
           `${API_BASE_URL}/wishlist`,
           {
