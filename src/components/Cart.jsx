@@ -30,7 +30,6 @@ function Cart() {
   }
 
   /* ---------------- QUANTITY UPDATE ---------------- */
-
   const handleQuantityChange = async (productId, action) => {
     //  Save previous state (for rollback)
     const previousCart = [...cartItems];
@@ -57,7 +56,7 @@ function Cart() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          user: "user123",
+          userId: USER_ID,
           productId,
           action,
         }),
@@ -67,6 +66,8 @@ function Cart() {
         throw new Error("Quantity update failed");
         toast.error("Quantity update failed");
       }
+
+      
     } catch (error) {
       console.error("Quantity update failed. Rolling back...", error);
 
