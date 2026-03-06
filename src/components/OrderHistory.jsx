@@ -81,10 +81,6 @@ function OrderHistory() {
             <p>
               <strong>Total:</strong> ₹{order.totalAmount}
             </p>
-
-            <p>
-              <strong>Status:</strong> {order.status}
-            </p>
           </div>
         ))
       )}
