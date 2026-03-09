@@ -6,6 +6,7 @@ import { ShopProvider } from "./context/ShopContext";
 import Footer from "./components/Footer";
 
 import "./App.css";
+import "./AppMob.css";
 
 import Nav from "./components/Nav";
 import {
