@@ -178,43 +178,48 @@ const handleMoveToWishlist = async (productId) => {
       <h5 className="text-center mb-4">MY CART ({cartItems.length})</h5>
 
       <div className="row justify-content-center">
-        {/* LEFT: CART ITEMS */}
-        <div className="col-md-7">
-          
+      {/* LEFT: CART ITEMS */}
+        <div className="col-12 col-md-7">
           {cartItems.map((item) => (
-            <div className="cart-item d-flex mb-4" key={item._id}>
-              <div className="cart-image">
-                <img src={item.productId.images?.[0]} alt={item.productId.name} />
-              </div>
+            <div className="cart-item mb-4 p-3" key={item._id}>
 
-              <div className="cart-details ms-4">
-                <h6>{item.productId.name}</h6>
-
-                <div className="price-row">
-                  <span className="price">₹{item.productId.price}</span>
+              {/* Image on top, details below, buttons full width at bottom */}
+              <div className="d-flex flex-column">
+                <div className="cart-image-mobile">
+                  <img src={item.productId.images?.[0]} alt={item.productId.name} />
                 </div>
 
-                <div className="quantity mt-2">
-                  Quantity :
+                <div className="cart-details mt-3">
+                  <h6>{item.productId.name}</h6>
+
+                  <div className="price-row">
+                    <span className="price">₹{item.productId.price}</span>
+                  </div>
+
+                  <div className="quantity mt-2 d-flex align-items-center gap-2">
+                    <span>Quantity:</span>
+                    <div className="qty-controls">
+                      <button
+                        className="qty-btn-mobile"
+                        onClick={() => handleQuantityChange(item.productId._id, "decrement")}
+                      >
+                        -
+                      </button>
+                      <span className="qty-number-mobile">{item.quantity}</span>
+                      <button
+                        className="qty-btn-mobile"
+                        onClick={() => handleQuantityChange(item.productId._id, "increment")}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Buttons always below image, full width */}
+                <div className="cart-action-btns mt-3">
                   <button
-                    className="qty-btn ms-2"
-                    onClick={() =>
-                      handleQuantityChange(item.productId._id, "decrement")
-                    }
-                  >
-                    -
-                  </button>
-                  <span className="qty-number mx-2">{item.quantity}</span>
-                  <button
-                    className="qty-btn"
-                    onClick={() =>
-                      handleQuantityChange(item.productId._id, "increment")
-                    }
-                  >
-                    +
-                  </button>
-                  <button
-                    className="btn btn-secondary w-100 mt-3"
+                    className="btn btn-secondary w-100"
                     onClick={() => handleRemoveFromCart(item.productId._id)}
                   >
                     Remove From Cart
@@ -227,6 +232,7 @@ const handleMoveToWishlist = async (productId) => {
                   </button>
                 </div>
               </div>
+
             </div>
           ))}
         </div>

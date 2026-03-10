@@ -1,44 +1,127 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useShop } from "../context/ShopContext";
+/* Nav - Mobile */
+.nav-mobile-icons {
+  display: none;
+  align-items: center;
+  gap: 16px;
+}
 
-export default function Nav({ setSearchQuery }) {
-  const { cartItems, wishlistItems } = useShop();
-  const [menuOpen, setMenuOpen] = useState(false);
-  return (
-    <header className="nav-wrapper">
-      <nav className="nav">
-        {/* Left */}
-        <div className="nav-left">
-          <Link to="/" className="logo-link">
-            <h2>MyShoppingSite</h2>
-          </Link>
-        </div>
+.hamburger-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
 
-        {/* Center */}
-        <div className="nav-center">
-          <div className="search-box">
-            <span className="search-icon">🔍</span>
-            <input type="text" placeholder="Search" onChange={(e) => setSearchQuery(e.target.value)}/>
-          </div>
-        </div>
+.nav-mobile-search {
+  display: none;
+  padding: 8px 16px;
+  border-top: 1px solid #e5e5e5;
+}
 
-        {/* Right */}
-        <div className="nav-right">
-          <Link to="/profile">
-            <button className="login-btn">Profile</button>
-          </Link>
+.nav-mobile-search .search-box {
+  width: 100%;
+}
 
-          <Link to="/wishlist" className="icon-wrapper">
-            ❤️ <span className="badge">{wishlistItems.length}</span>
-          </Link>
+.nav-mobile-menu {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #e5e5e5;
+  background: #fff;
+}
 
-          <Link to="/cart" className="icon-wrapper cart">
-            🛒 <span className="badge">{cartItems.length}</span>
-            <span className="cart-text">Cart</span>
-          </Link>
-        </div>
-      </nav>
-    </header>
-  );
+.mobile-menu-item {
+  padding: 14px 24px;
+  text-decoration: none;
+  color: #333;
+  font-size: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-menu-item:hover {
+  background: #f9f9f9;
+}
+
+.mobile-badge {
+  background: red;
+  color: white;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-left: 4px;
+}
+
+@media (max-width: 768px) {
+  .nav-center {
+    display: none;
+  }
+
+  .nav-desktop {
+    display: none;
+  }
+
+  .nav-mobile-icons {
+    display: flex;
+  }
+
+  .nav-mobile-search {
+    display: block;
+  }
+
+    /* Remove forced min-height on product name in mobile */
+  .product-name {
+    min-height: unset;
+  }
+    .product-name {
+    min-height: unset;  /* removes the forced height on mobile */
+  }
+
+  /* Cart item image: full width on mobile, fixed width on desktop */
+  .cart-image-mobile {
+    width: 100%;
+    height: 200px;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cart-image-mobile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 768px) {
+  .nav-center {
+    display: none;
+  }
+
+  .nav-desktop {
+    display: none;
+  }
+
+  .nav-mobile-icons {
+    display: flex;
+  }
+
+  .nav-mobile-search {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-left {
+    margin-left: 8px;
+  }
+  .nav{
+    margin-top: 5px;
+  }
+}
+}
+@media (max-width: 768px) {
+
 }

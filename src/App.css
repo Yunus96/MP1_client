@@ -149,7 +149,7 @@
   line-height: 1;
 }
 
-/* Product list */
+/* Product list- */
 .product-image-box {
   background: #eee;
   padding: 20px;
@@ -355,7 +355,6 @@
   background: #fff;
   border: 1px solid #eee;
 }
-
 .cart-image {
   background: #eee;
   width: 280px;
@@ -363,6 +362,15 @@
   align-items: center;
   justify-content: center;
 }
+  /* Cart item image: full width on mobile, fixed width on desktop */
+  .cart-image-mobile {
+    width: 100%;
+    height: 200px;
+    background: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
 .cart-image img {
   width: 100%;
