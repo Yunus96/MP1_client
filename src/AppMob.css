@@ -98,3 +98,8 @@
   }
 }
 }
+@media (max-width: 768px) {
+  .product-name {
+    min-height: unset;  /* removes the forced height on mobile */
+  }
+}
