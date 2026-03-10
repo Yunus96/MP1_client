@@ -17,7 +17,7 @@ function Hero() {
   return (
     <div className="container my-4">
       {/* Top Categories */}
-      <div className="row text-center mb-4">
+      <div className="row row-cols-2 row-cols-md-3 row-cols-lg-5 text-center mb-4 g-3">
         {categories.map((cat) => (
           <div className="col" key={cat}>
             <div
